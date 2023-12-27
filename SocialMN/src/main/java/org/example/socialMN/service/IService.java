@@ -6,12 +6,12 @@ import java.util.List;
 
 public interface IService {
 
-    public void addUser(User user);
-    public  boolean getValidateUser(String username, String password);
+     void addUser(User user);
+      boolean getValidateUser(String username, String password);
 
-    public User getUserData(String username, String password);
+     User getUserData(String username, String password);
 
-    public List<User> getSuggestedFriends(String loggedUserName);
+     List<User> getSuggestedFriends(String loggedUserName);
 
     void addFriend(User user, User friend);
 

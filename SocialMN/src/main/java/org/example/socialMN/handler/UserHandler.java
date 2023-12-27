@@ -29,11 +29,8 @@ public class UserHandler {
         String username = userCredentials.getUsername();
         String password = userCredentials.getPassword();
 //        LOGGER.info("Received request for user credentials - Username: {}, Password: {}", username, password);
-
         User user = iService.getUserData(username, password);
-
         UserDTO userDTO = mapUserToDTO(user);
-
         result.put("data", userDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -60,16 +57,10 @@ public class UserHandler {
     }
 
 
-
     public List<UserDTO> handleGetAllUsersRequest(String loggedUserName) {
         List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
         return allUsers.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
     }
-//    public List<UserDTO> handleGetAllUsersRequest() {
-//        List<User> allUsers = iService.getSuggestedFriends();
-////        return allUsers.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
-//    }
-
 
 
     public ResponseEntity<String> handleAddFriendRequest(String userName, String friendUserName) {
