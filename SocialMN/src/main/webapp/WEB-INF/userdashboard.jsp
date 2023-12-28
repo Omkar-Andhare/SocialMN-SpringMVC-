@@ -193,15 +193,42 @@
                 'friendUserName': friendUsername
             },
             success: function () {
-                alert("Friend added successfully");
+                showNotification("Friend added successfully");
+
+                // alert("Friend added successfully");
+                setTimeout(function () {
+                    removeFriendFromUI(friendUsername);
+                }, 500);
             },
+
             error: function (error) {
                 alert("Error adding friend" + error);
             }
         });
     }
 
+    function removeFriendFromUI(friendUsername) {
+        // Remove the friend from the UI
+        $("li:contains('" + friendUsername + "')").fadeOut('slow', function () {
+            $(this).remove();
+        });
+    }
 
+    function showNotification(message, type = 'info') {
+        if (Notification.permission === 'granted') {
+            var options = {
+                body: message,
+                // icon: '/path/to/icon.png',
+            };
+            var notification = new Notification('User Dashboard', options);
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === 'granted') {
+                    showNotification(message, type);
+                }
+            });
+        }
+    }
 </script>
 </body>
 </html>
