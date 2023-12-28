@@ -50,6 +50,19 @@
             margin-bottom: 20px;
 
         }
+
+        .list-item {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .add-button {
+            background-color: #4CAF50;
+            color: white;
+            margin-left: 10px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -114,9 +127,8 @@
         $.ajax({
             type: "POST",
             url: "/SocialMN/user/logout",
-            success: function (response) {
+            success: function () {
                 alert("Logout successful");
-                // Redirect to the signup page or any other desired page
                 window.location.href = "/SocialMN/user/index";
             },
             error: function (error) {
@@ -151,12 +163,14 @@
         var friendList = $("#friendList");
 
         friends.forEach(function (friend) {
-            var listItem = $("<li>");
+            var listItem = $("<li>").addClass("list-item");
             listItem.text(friend.username);
 
-            var addButton = $("<button>");
+            var addButton = $("<button>").addClass("add-button");
             addButton.text("Add Friend");
             addButton.click(function () {
+
+
             });
 
             listItem.append(addButton);

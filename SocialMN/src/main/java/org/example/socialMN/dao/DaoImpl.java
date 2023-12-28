@@ -16,17 +16,12 @@ public class DaoImpl implements IDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-//    @Override
-//    public void addUser(User user) {
-//
-//
-//        System.out.printf("IN  IDao layer: " + user);
-//        Session session = sessionFactory.openSession();
-//        session.beginTransaction();
-//        session.saveOrUpdate(user);
-//        session.getTransaction().commit();
-//    }
-
+    /**
+     * Executes an HQL query for validation, user is registered or not.
+     * hql        The HQL query to be executed for validation.
+     * parameters A Map containing parameters to be set in the query.
+     * return True if the count of results is greater than 0, indicating user exist; otherwise, false.
+     */
     @Override
     public boolean executeQueryForValidation(String hql, Map<String, Object> parameters) {
         Session session = sessionFactory.openSession();
@@ -42,39 +37,14 @@ public class DaoImpl implements IDao {
         return count != null && count > 0;
     }
 
-//    @Override
-//    public boolean getValidateUser(String username, String password) {
-//        Session session = sessionFactory.openSession();
-//
-//        String hql = "SELECT COUNT(*) FROM User WHERE username = :username AND password = :password";
-//        Query<Long> query = session.createQuery(hql, Long.class);
-//        query.setParameter("username", username);
-//        query.setParameter("password", password);
-//
-//        Long count = query.uniqueResult();
-//        return count != null && count > 0;
-//    }
-
-//    @Override
-//    public User getUserData(String username, String password) {
-//
-//        Session session = sessionFactory.openSession();
-//        String hql = "FROM User WHERE username = :username AND password = :password";
-//        Query<User> query = session.createQuery(hql, User.class);
-//        query.setParameter("username", username);
-//        query.setParameter("password", password);
-//        return query.uniqueResult();
-//    }
-
-    /*@Override
-    public List<User> getSuggestedFriends() {
-
-        Session session = sessionFactory.openSession();
-        String hql = "FROM User";
-        Query<User> query = session.createQuery(hql, User.class);
-        return query.list();
-    }*/
-
+    /**
+     * Executes an HQL query and returns a list of results based on the provided parameters.
+     * hql        The HQL query to be executed.
+     * modelClass The class representing the model for which the query is executed.
+     * parameters A Map containing parameters to be set in the query.
+     * <p>
+     * return A list of results based on the executed HQL query.
+     */
     @Override
     public <T> List<T> executeHqlQuery(String hql, Class<T> modelClass, Map<String, Object> parameters) {
 
@@ -86,6 +56,14 @@ public class DaoImpl implements IDao {
         return query.list();
     }
 
+    /**
+     * Executes an HQL query and returns a single result based on the provided parameters.
+     * <p>
+     * hql        The HQL query to be executed.
+     * modelClass The class representing the model for which the query is executed.
+     * parameters A Map containing parameters to be set in the query.
+     * return A single result based on the executed HQL query.
+     */
     @Override
     public <T> T executeHqlQuerySingleResult(String hql, Class<T> modelClass, Map<String, Object> parameters) {
         Session session = sessionFactory.openSession();
@@ -96,7 +74,10 @@ public class DaoImpl implements IDao {
         return query.uniqueResult();
     }
 
-
+    /**
+     * Saves a model entity to the database.
+     * model The model entity to be saved.
+     */
     @Override
     public <T> void save(T model) {
         Session session = sessionFactory.openSession();
@@ -104,21 +85,6 @@ public class DaoImpl implements IDao {
         session.save(model);
         transaction.commit();
     }
-
-
-//    @Override
-//    public User getByUsername(String username) {
-//        Session session = sessionFactory.openSession();
-//
-//        try {
-//            String hql = "FROM User WHERE username = :username";
-//            Query<User> query = session.createQuery(hql, User.class);
-//            query.setParameter("username", username);
-//            return query.uniqueResult();
-//        } finally {
-//            session.close();
-//        }
-//    }
 }
 
 

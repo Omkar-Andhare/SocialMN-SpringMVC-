@@ -1,5 +1,7 @@
 package org.example.socialMN.handler;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
@@ -18,7 +20,8 @@ import java.util.stream.Collectors;
 @Component
 public class UserHandler {
 
-//    private static final Logger LOGGER = Logger.getLogger(UserHandler.class);
+
+    private static final Logger logger = LogManager.getLogger(IService.class);
 
 
     @Autowired
@@ -28,7 +31,7 @@ public class UserHandler {
         Map<String, Object> result = new HashMap<>();
         String username = userCredentials.getUsername();
         String password = userCredentials.getPassword();
-//        LOGGER.info("Received request for user credentials - Username: {}, Password: {}", username, password);
+        logger.info("Received request for user credentials - ," + username + "," + password);
         User user = iService.getUserData(username, password);
         UserDTO userDTO = mapUserToDTO(user);
         result.put("data", userDTO);
@@ -52,18 +55,23 @@ public class UserHandler {
         if (null != user.getFriendList() && !user.getFriendList().isEmpty()) {
             userDTO.setFriends(user.getFriendList().stream().map(Friendship::getFriend).collect(Collectors.toSet()));
         }
+        logger.debug("Mapped user data to DTO successfully");
 
         return userDTO;
     }
 
 
     public List<UserDTO> handleGetAllUsersRequest(String loggedUserName) {
+        logger.info("Received request to get suggested friends for user: " + loggedUserName);
+
         List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
         return allUsers.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
     }
 
 
     public ResponseEntity<String> handleAddFriendRequest(String userName, String friendUserName) {
+        logger.info("Received request to add friend - User: {}, Friend: {}" + userName + "," + friendUserName);
+
         User user = iService.getByUsername(userName);
         User friend = iService.getByUsername(friendUserName);
 

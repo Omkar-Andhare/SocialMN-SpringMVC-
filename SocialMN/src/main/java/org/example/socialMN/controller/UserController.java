@@ -24,12 +24,20 @@ public class UserController {
     @Autowired
     private UserHandler userHandler;
 
-
+    /**
+     * Handles a POST request to retrieve user data based on provided credentials.
+     * userCredentials The user credentials sent in the request body.
+     */
     @PostMapping(value = "/details", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserData(@RequestBody User userCredentials) {
         return userHandler.handleUserDataRequest(userCredentials);
     }
 
+    /**
+     * Handles a GET request to retrieve suggested friends for a user.
+     * loggedUserName The username of the logged-in user (provided in the request header).
+     * return ResponseEntity containing a list of suggested friends for the logged-in user.
+     */
     @GetMapping(value = "/suggested-friends", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserDTO>> getFriendsSuggestions(
             @RequestHeader(value = "user-name") String loggedUserName
@@ -37,20 +45,15 @@ public class UserController {
         //TODO validate if user name is passed or not
         List<UserDTO> userList = userHandler.handleGetAllUsersRequest(loggedUserName);
 
-        LOGGER.debug("#################################################### USER LIST >> " + userList);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-//    @GetMapping(value = "/suggested-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<UserDTO>> getFriendsSuggestions(
-//
-//    ) {
-//        //TODO validate if user name is passed or not
-//        List<UserDTO> userList = userHandler.handleGetAllUsersRequest();
-//
-//        LOGGER.debug("#################################################### USER LIST >> " + userList);
-//        return new ResponseEntity<>(userList, HttpStatus.OK);
-//    }
+    /**
+     * Handles a POST request to add a friend for the specified user.
+     * userName        The username of the user initiating the friend request (provided in the request header).
+     * friendUserName  The username of the friend to be added (provided in the request header).
+     * return ResponseEntity containing the result that added or not
+     */
 
     @PostMapping(value = "/add-friend", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addFriends(@RequestHeader String userName,
