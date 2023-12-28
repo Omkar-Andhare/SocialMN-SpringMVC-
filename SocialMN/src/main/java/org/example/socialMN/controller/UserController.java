@@ -1,11 +1,12 @@
 package org.example.socialMN.controller;
 
 
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.handler.UserHandler;
 import org.example.socialMN.model.User;
+import org.example.socialMN.service.IService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LogManager.getLogger(IService.class);
 
     @Autowired
     private UserHandler userHandler;
@@ -58,6 +59,8 @@ public class UserController {
     @PostMapping(value = "/add-friend", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addFriends(@RequestHeader String userName,
                                              @RequestHeader String friendUserName) {
+        logger.info("Received add friend request - User: " + userName + ", Friend:" + friendUserName);
+
         return userHandler.handleAddFriendRequest(userName, friendUserName);
     }
 }

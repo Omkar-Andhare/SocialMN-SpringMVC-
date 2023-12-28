@@ -56,8 +56,7 @@ public class ServiceImpl implements IService {
     /**
      * Retrieves user data based on the provided username and password.
      * This method retrieves a user entity from the system using the specified username and password.
-     *
-     * @return The User entity corresponding to the given username and password
+     * return The User entity corresponding to the given username and password
      */
     @Override
     public User getUserData(String username, String password) {
@@ -82,8 +81,7 @@ public class ServiceImpl implements IService {
      * Retrieves a list of suggested friends for the user with the given username.
      * This method queries the system to obtain a list of users who are suggested friends
      * for the user with the specified username, excluding the user themselves.
-     *
-     * @return A list of User entities representing suggested friends for the logged-in user.
+     * return A list of User entities representing suggested friends for the logged-in user.
      */
     @Override
     public List<User> getSuggestedFriends(String loggedUserName) {

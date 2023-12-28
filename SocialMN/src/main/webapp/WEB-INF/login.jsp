@@ -86,8 +86,8 @@
             contentType: "application/json",
             data: JSON.stringify(userData),
             success: function () {
-                alert("Login successfully!");
-                window.location.href = "/SocialMN/user/details";
+                // alert("Login successfully!");
+                window.location.href = "/SocialMN/user/userdashboard";
             },
             error: function () {
                 alert("Login failed. Please check your username and password.");

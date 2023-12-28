@@ -43,9 +43,9 @@ public class ViewController {
      * Handles requests for the dashboard page.
      * return The name of the dashboard page view.
      */
-    @GetMapping("/details")
+    @GetMapping("/userdashboard")
     public String dashboardPage() {
-        return "details";
+        return "userdashboard";
     }
 
 

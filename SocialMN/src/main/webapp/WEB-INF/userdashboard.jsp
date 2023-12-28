@@ -107,7 +107,7 @@
             contentType: "application/json",
             data: JSON.stringify(credentialData),
             success: function (response) {
-                alert("fetching data successfully");
+                // alert("fetching data successfully");
                 $("#usernameSpan").text(response.data.username);
                 $("#fullNameSpan").text(response.data.fullname);
                 $("#dobSpan").text(response.data.dateOfBirth);
@@ -128,7 +128,7 @@
             type: "POST",
             url: "/SocialMN/user/logout",
             success: function () {
-                alert("Logout successful");
+                // alert("Logout successful");
                 window.location.href = "/SocialMN/user/index";
             },
             error: function (error) {
@@ -150,7 +150,7 @@
             },
             // contentType:'application/json',
             success: function (response) {
-                alert("Fetching suggested friends successfully");
+                // alert("Fetching suggested friends successfully");
                 displayFriends(response);
             },
             error: function (error) {
@@ -169,7 +169,7 @@
             var addButton = $("<button>").addClass("add-button");
             addButton.text("Add Friend");
             addButton.click(function () {
-
+                addFriend(friend.username);
 
             });
 
@@ -179,6 +179,28 @@
     }
 
     getSuggestedFriends();
+
+    function addFriend(friendUsername) {
+        var loggedUserName = sessionStorage.getItem("username");
+
+
+        $.ajax({
+            type: "POST",
+            url: "/SocialMN/user/add-friend",
+            contentType: "application/json",
+            headers: {
+                'userName': loggedUserName,
+                'friendUserName': friendUsername
+            },
+            success: function () {
+                alert("Friend added successfully");
+            },
+            error: function (error) {
+                alert("Error adding friend" + error);
+            }
+        });
+    }
+
 
 </script>
 </body>
