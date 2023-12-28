@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceImpl implements IService {
@@ -83,25 +84,70 @@ public class ServiceImpl implements IService {
      * for the user with the specified username, excluding the user themselves.
      * return A list of User entities representing suggested friends for the logged-in user.
      */
+//    @Override
+//    public List<User> getSuggestedFriends(String loggedUserName) {
+//
+//        logger.info("Retrieving suggested friends for user: " + loggedUserName);
+//
+//
+//        // Define the HQL (Hibernate Query Language) to select suggested friends for the logged-in user
+//        String hql = "FROM " + User.class.getName() + " where username != :userName";
+//
+//        // Prepare parameters to be used in the HQL query
+//        Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("userName", loggedUserName);
+//
+//        logger.info("Suggested friends retrieved successfully for " + loggedUserName);
+//
+//
+//        // Delegate the query execution to the DAO layer
+//        return dao.executeHqlQuery(hql, User.class, parameters);
+//    }
     @Override
     public List<User> getSuggestedFriends(String loggedUserName) {
-
         logger.info("Retrieving suggested friends for user: " + loggedUserName);
 
+        // Fetch the list of friends for the logged-in user
+        List<User> userFriends = getUserFriends(loggedUserName);
 
-        // Define the HQL (Hibernate Query Language) to select suggested friends for the logged-in user
-        String hql = "FROM " + User.class.getName() + " where username != :userName";
+        // If the user has no friends, return all suggested friends
+        if (userFriends.isEmpty()) {
+            // Define the HQL to select all users except the logged-in user
+            String hql = "FROM " + User.class.getName() + " WHERE username != :userName";
 
-        // Prepare parameters to be used in the HQL query
+            // Prepare parameters for the HQL query
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("userName", loggedUserName);
+
+            // Execute the HQL query
+            List<User> suggestedFriends = dao.executeHqlQuery(hql, User.class, parameters);
+
+            logger.info("Suggested friends retrieved successfully for " + loggedUserName);
+
+            return suggestedFriends;
+        }
+
+        // If the user has friends, exclude them from the list of suggested friends
+        List<String> friendUsernames = userFriends.stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+
+        // Define the HQL to select suggested friends who are not already friends
+        String hql = "FROM " + User.class.getName() + " WHERE username != :userName AND username NOT IN :friendUsernames";
+
+        // Prepare parameters for the HQL query
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("userName", loggedUserName);
+        parameters.put("friendUsernames", friendUsernames);
+
+        // Execute the HQL query
+        List<User> suggestedFriends = dao.executeHqlQuery(hql, User.class, parameters);
 
         logger.info("Suggested friends retrieved successfully for " + loggedUserName);
 
-
-        // Delegate the query execution to the DAO layer
-        return dao.executeHqlQuery(hql, User.class, parameters);
+        return suggestedFriends;
     }
+
 
     /**
      * Adds a friendship connection between the given user and friend.
@@ -139,6 +185,26 @@ public class ServiceImpl implements IService {
 
         // Execute the HQL query and retrieve a single result (or null)
         return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+    }
+
+
+    @Override
+    public List<User> getUserFriends(String loggedUserName) {
+        logger.info("Retrieving friends for user: " + loggedUserName);
+
+        // Define the HQL to select friends for the logged-in user
+        String hql = "SELECT f.friend FROM " + Friendship.class.getName() + " f WHERE f.user.username = :userName";
+
+        // Prepare parameters for the HQL query
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("userName", loggedUserName);
+
+        // Execute the HQL query
+        List<User> friends = dao.executeHqlQuery(hql, User.class, parameters);
+
+        logger.info("Friends retrieved successfully for " + loggedUserName);
+
+        return friends;
     }
 
 

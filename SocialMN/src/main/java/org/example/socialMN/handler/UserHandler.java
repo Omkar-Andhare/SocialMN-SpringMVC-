@@ -28,6 +28,8 @@ public class UserHandler {
     private IService iService;
 
     public ResponseEntity<?> handleUserDataRequest(User userCredentials) {
+
+
         Map<String, Object> result = new HashMap<>();
         String username = userCredentials.getUsername();
         String password = userCredentials.getPassword();
@@ -66,6 +68,12 @@ public class UserHandler {
 
         List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
         return allUsers.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
+    }
+
+    public List<UserDTO> handleGetUserFriends(String loggedUserName) {
+        List<User> userFriends = iService.getUserFriends(loggedUserName);
+        return userFriends.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
+
     }
 
 
@@ -108,4 +116,5 @@ public class UserHandler {
         }
         return false; // They are not friends
     }
+
 }

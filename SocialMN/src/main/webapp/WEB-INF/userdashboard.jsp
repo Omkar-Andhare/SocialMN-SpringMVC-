@@ -6,87 +6,206 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
-            justify-content: left;
+            justify-content: center;
             height: 100vh;
+            background: url("https://cdn.pixabay.com/photo/2017/03/19/03/40/avatar-2155431_1280.png") center/cover no-repeat;
         }
 
-        .dashboard-container {
-            width: 400px;
-            background-color: #fff;
+
+
+        .profile-container {
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            width: 300px;
+            position: fixed;
+            top: 10px;
+            left: 10px;
         }
 
-        .profile-point {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
 
         h1 {
             margin-bottom: 20px;
+            color: #333;
         }
 
         p {
             margin-bottom: 10px;
+            color: #555;
         }
 
         span {
             font-weight: bold;
+            color: #333;
         }
 
         img {
             max-width: 100%;
             border-radius: 8px;
-        }
-
-        h1 {
-
-            margin-bottom: 20px;
-
+            margin-bottom: 10px;
         }
 
         .list-item {
             margin-bottom: 10px;
             font-weight: bold;
+            color: #333;
         }
 
         .add-button {
             background-color: #4CAF50;
             color: white;
-            margin-left: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
         }
 
+        .list-item {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .friend-list {
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 40px; /* Set your preferred top margin */
+            right: 30px; /* Adjusted right margin to move it a bit to the left */
+            transform: translate(0, 0);
+        }
+
+
+        .suggested-friend-list {
+            text-align: center;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggested-friend-list h2 {
+            margin-bottom: 4px; /* Add margin to the bottom of the h2 element */
+        }
+
+        .friend-list-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .friend-list-items li {
+            margin-bottom: 15px; /* Adjust the margin as needed */
+            margin: 50px 0 0 0; /* Add top margin to move the list down */
+
+        }
+
+
+
+
+
+
+
+        .friends-button {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            float: right;
+        }
+
+        .logout-button {
+            background-color: red;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            float: left;
+        }
+
+
+        .friends-button:hover {
+            background-color: #2980b9;
+        }
+
+        .friend-list-items {
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 40px; /* Adjusted to move it to the top */
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
     </style>
 </head>
 <body>
-<h1>User Dashboard</h1>
-
-
-<div class="dashboard-container">
-    <div class="profile-point">&#8226;</div>
-
+<div class="profile-container">
+    <h1>User Dashboard</h1>
     <p>Username: <span id="usernameSpan"></span></p>
     <p>Full Name: <span id="fullNameSpan"></span></p>
     <p>Date of Birth: <span id="dobSpan"></span></p>
     <p>Profile Picture:</p>
     <img id="profilePicture" src="" alt="Profile Picture">
-
     <p>Bio: <span id="bioSpan"></span></p>
     <p>Email: <span id="emailSpan"></span></p>
-    <button id="logoutButton" onclick="logout()">Logout</button>
+    <button id="logoutButton" class="logout-button" onclick="logout()">Logout</button>
+</div>
+<div class="suggested-friend-list">
+    <h2>Suggested Friend List</h2>
+    <ul id="friendList" class="friend-list-items"></ul>
+</div>
 
-</div>
 <div class="friend-list">
-    <h2>suggested Friend List</h2>
-    <ul id="friendList"></ul>
+    <h2>Your Friends</h2>
+    <ul id="userFriendsList"></ul>
+    <button class="friends-button" onclick="loadUserFriends()">Your Friends</button>
 </div>
+
+
+</body>
+<%--<h1>User Dashboard</h1>--%>
+
+
+<%--<div class="dashboard-container">--%>
+<%--    <div class="profile-point"></div>--%>
+
+<%--    <p>Username: <span id="usernameSpan"></span></p>--%>
+<%--    <p>Full Name: <span id="fullNameSpan"></span></p>--%>
+<%--    <p>Date of Birth: <span id="dobSpan"></span></p>--%>
+<%--    <p>Profile Picture:</p>--%>
+<%--    <img id="profilePicture" src="" alt="Profile Picture">--%>
+
+<%--    <p>Bio: <span id="bioSpan"></span></p>--%>
+<%--    <p>Email: <span id="emailSpan"></span></p>--%>
+<%--    <button id="logoutButton" onclick="logout()">Logout</button>--%>
+<%--    <button class="friends-button" onclick="loadUserFriends()">Your Friends</button>--%>
+
+
+<%--</div>--%>
+<%--<div class="friend-list">--%>
+<%--    <h2>suggested Friend List</h2>--%>
+<%--    <ul id="friendList"></ul>--%>
+<%--</div>--%>
+<%--<div class="friend-list">--%>
+<%--    <h2>Your Friends</h2>--%>
+<%--    <ul id="userFriendsList"></ul>--%>
+<%--</div>--%>
 
 
 <script>
@@ -228,6 +347,35 @@
                 }
             });
         }
+    }
+
+    function loadUserFriends() {
+        var loggedUserName = sessionStorage.getItem("username");
+
+        $.ajax({
+            type: "GET",
+            url: "/SocialMN/user/user-friends",
+            headers: {
+                'user-name': loggedUserName
+            },
+            success: function (response) {
+                displayUserFriends(response);
+            },
+            error: function (error) {
+                alert("Error fetching user friends: " + error);
+            }
+        });
+    }
+
+    function displayUserFriends(userFriends) {
+        var userFriendsList = $("#userFriendsList");
+        userFriendsList.empty(); // Clear the existing list
+
+        userFriends.forEach(function (friend) {
+            var listItem = $("<li>").addClass("list-item");
+            listItem.text(friend.username);
+            userFriendsList.append(listItem);
+        });
     }
 </script>
 </body>

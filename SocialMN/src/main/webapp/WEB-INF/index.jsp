@@ -13,8 +13,11 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background: url("https://cdn.pixabay.com/photo/2017/03/19/03/40/avatar-2155431_1280.png") center/cover no-repeat;
+
         }
+
+
 
         .container {
             text-align: center;
@@ -30,12 +33,6 @@
             margin-top: 10px;
         }
 
-        .animation-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-        }
 
         .btn-container {
             margin-top: 20px;

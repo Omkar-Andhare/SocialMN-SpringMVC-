@@ -63,4 +63,14 @@ public class UserController {
 
         return userHandler.handleAddFriendRequest(userName, friendUserName);
     }
+
+    @GetMapping(value = "/user-friends", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserDTO>> getUserFriends(
+            @RequestHeader(value = "user-name") String loggedUserName
+    ) {
+        List<UserDTO> userFriends = userHandler.handleGetUserFriends(loggedUserName);
+        return new ResponseEntity<>(userFriends, HttpStatus.OK);
+    }
+
+
 }

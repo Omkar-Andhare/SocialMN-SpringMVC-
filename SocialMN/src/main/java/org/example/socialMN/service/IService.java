@@ -18,5 +18,7 @@ public interface IService {
 
     User getByUsername(String username);
 
+     List<User> getUserFriends(String loggedUserName);
+
 
 }
