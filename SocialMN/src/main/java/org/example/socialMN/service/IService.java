@@ -18,7 +18,9 @@ public interface IService {
 
     User getByUsername(String username);
 
-     List<User> getUserFriends(String loggedUserName);
+    List<User> getUserFriends(String loggedUserName);
+
+    void removeFriend(String userName, String friendUserName);
 
 
 }

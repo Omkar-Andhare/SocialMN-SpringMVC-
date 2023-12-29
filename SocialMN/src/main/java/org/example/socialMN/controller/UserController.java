@@ -44,7 +44,7 @@ public class UserController {
             @RequestHeader(value = "user-name") String loggedUserName
     ) {
         //TODO validate if user name is passed or not
-        List<UserDTO> userList = userHandler.handleGetAllUsersRequest(loggedUserName);
+        List<UserDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
 
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
@@ -70,6 +70,20 @@ public class UserController {
     ) {
         List<UserDTO> userFriends = userHandler.handleGetUserFriends(loggedUserName);
         return new ResponseEntity<>(userFriends, HttpStatus.OK);
+    }
+
+    /**
+     * Handles a DELETE request to remove a friend for the specified user.
+     * userName        The username of the user initiating the friend removal (provided in the request header).
+     * friendUserName  The username of the friend to be removed (provided in the request header).
+     * return ResponseEntity containing the result that friend removed or not.
+     */
+    @DeleteMapping(value = "/remove-friend")
+    public ResponseEntity<?> removeFriend(@RequestHeader String userName,
+                                               @RequestHeader String friendUserName) {
+        logger.info("Received remove friend request - User: " + userName + ", Friend:" + friendUserName);
+
+        return userHandler.handleRemoveFriend(userName, friendUserName);
     }
 
 

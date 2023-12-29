@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.example.socialMN.dao.IDao;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceImpl implements IService {
     private static final Logger logger = LogManager.getLogger(IService.class);
-
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Autowired
     private IDao dao;
@@ -205,6 +208,11 @@ public class ServiceImpl implements IService {
         logger.info("Friends retrieved successfully for " + loggedUserName);
 
         return friends;
+    }
+
+    @Override
+    public void removeFriend(String userName, String friendUserName) {
+
     }
 
 

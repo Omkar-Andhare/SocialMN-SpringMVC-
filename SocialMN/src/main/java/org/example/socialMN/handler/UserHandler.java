@@ -63,7 +63,7 @@ public class UserHandler {
     }
 
 
-    public List<UserDTO> handleGetAllUsersRequest(String loggedUserName) {
+    public List<UserDTO> handleSuggestedFriends(String loggedUserName) {
         logger.info("Received request to get suggested friends for user: " + loggedUserName);
 
         List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
@@ -73,7 +73,6 @@ public class UserHandler {
     public List<UserDTO> handleGetUserFriends(String loggedUserName) {
         List<User> userFriends = iService.getUserFriends(loggedUserName);
         return userFriends.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
-
     }
 
 
@@ -115,6 +114,15 @@ public class UserHandler {
             }
         }
         return false; // They are not friends
+    }
+
+    public ResponseEntity<?> handleRemoveFriend(String userName, String friendUserName) {
+        try {
+            iService.removeFriend(userName, friendUserName);
+            return ResponseEntity.ok("Friend removed successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error removing friend: " + e.getMessage());
+        }
     }
 
 }

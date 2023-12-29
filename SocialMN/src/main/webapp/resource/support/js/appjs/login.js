@@ -1,10 +1,3 @@
-
-$(document).ready(function (){
-    test();
-
-});
-
-
 function loginUser() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
@@ -24,15 +17,11 @@ function loginUser() {
         contentType: "application/json",
         data: JSON.stringify(userData),
         success: function () {
-            alert("Login successfully!");
-            window.location.href = "/SocialMN/user/dashboard";
+            // alert("Login successfully!");
+            window.location.href = "/SocialMN/user/userdashboard";
         },
         error: function () {
             alert("Login failed. Please check your username and password.");
         }
     });
-}
-
-function test(){
-    alert("Hello");
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +20,7 @@
             background: url("https://cdn.pixabay.com/photo/2017/03/19/03/40/avatar-2155431_1280.png") center/cover no-repeat;
 
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
@@ -55,7 +57,7 @@
 <div class="container">
     <h2>User SignUp</h2>
     <%--    <form id="signupform" action="/signup" method="post">--%>
-    <form action="/signup" id="signupform"  method="post" >
+    <form action="/signup" id="signupform" method="post">
 
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
@@ -76,7 +78,7 @@
         </select>
 
         <label for="profilePicture">Profile Picture:</label>
-        <input type="text" id="profilePicture" name="profilePicture" >
+        <input type="text" id="profilePicture" name="profilePicture">
 
         <label for="bio">Bio:</label>
         <textarea id="bio" name="bio" rows="4"></textarea>
@@ -87,48 +89,7 @@
         <button id="submitdata" type="button" onclick="signupUser()">Register</button>
     </form>
 </div>
-<script>
+<script src="<c:url value="/resource/support/js/appjs/signup.js"/>"></script>
 
-    function signupUser() {
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        var fullname = document.getElementById('fullname').value;
-        var dateOfBirth = document.getElementById('dateOfBirth').value;
-        var gender = document.getElementById('gender').value;
-        var profilePicture = document.getElementById('profilePicture').value;
-        var bio = document.getElementById('bio').value;
-        var email = document.getElementById('email').value;
-
-
-        var userData = {
-            "username": username,
-            "password": password,
-            "fullname": fullname,
-            "dateOfBirth": dateOfBirth,
-            "gender": gender,
-            "profilePicture": profilePicture,
-            "bio": bio,
-            "email": email
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "/SocialMN/user/signup",
-            contentType: "application/json",
-            data: JSON.stringify(userData),
-            success: function () {
-                // alert("Sign Up successfully..!");
-                window.location.href = "/SocialMN/user/login";
-
-
-            },
-            error: function () {
-                alert("sign up failed ");
-            }
-        });
-
-
-    }
-</script>
 </body>
 </html>

@@ -12,11 +12,15 @@
             http://www.springframework.org/schema/mvc
             http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <mvc:resources mapping="/resource/**" location="/resource/"/>
+
+
     <bean name="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="Url" value="jdbc:mysql://localhost:3306/SocialMN_springMVC"/>
         <property name="username" value="root"/>
         <property name="password" value="root"/>
+
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -48,5 +52,6 @@
 
     <!--Provide support for conversion, formatting and validation -->
     <mvc:annotation-driven/>
+
 
 </beans>
