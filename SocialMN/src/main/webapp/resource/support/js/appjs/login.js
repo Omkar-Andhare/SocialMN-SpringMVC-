@@ -18,6 +18,8 @@ function loginUser() {
         data: JSON.stringify(userData),
         success: function () {
             // alert("Login successfully!");
+
+
             window.location.href = "/SocialMN/user/userdashboard";
         },
         error: function () {

@@ -138,6 +138,8 @@ function showNotification(message, type = 'info') {
     }
 }
 
+var userFriendsListVisible = false;
+
 function loadUserFriends() {
     var loggedUserName = sessionStorage.getItem("username");
 
@@ -154,7 +156,16 @@ function loadUserFriends() {
             alert("Error fetching user friends: " + error);
         }
     });
+    var userFriendsList = $("#userFriendsList");
+    if (userFriendsListVisible) {
+        userFriendsList.hide();
+        userFriendsListVisible = false;
+    } else {
+        userFriendsList.show();
+        userFriendsListVisible = true;
+    }
 }
+
 
 function displayUserFriends(userFriends) {
     var userFriendsList = $("#userFriendsList");
