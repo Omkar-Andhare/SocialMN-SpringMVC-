@@ -174,6 +174,76 @@ function displayUserFriends(userFriends) {
     userFriends.forEach(function (friend) {
         var listItem = $("<li>").addClass("list-item");
         listItem.text(friend.username);
-        userFriendsList.append(listItem);
+
+        var removeButton = $("<button>").addClass("remove-button").text("Remove");
+        removeButton.click(function () {
+            removeFriend(friend.username);
+        });
+
+        var mutualButton = $("<button>").addClass("mutual-button").text("Mutual Friends");
+        mutualButton.click(function () {
+            getMutualFriends(friend.username);
+        });
+
+
+
+        listItem.append(removeButton);
+        listItem.append(mutualButton);
+        $("#userFriendsList").append(listItem);
     });
+}
+
+function removeFriend(friendUsername) {
+    var loggedUserName = sessionStorage.getItem("username");
+
+    $.ajax({
+        type: "DELETE",
+        url: "/SocialMN/user/remove-friend",
+        contentType: "application/json",
+        headers: {
+            'loggedUserName': loggedUserName,
+            'friendUserName': friendUsername
+        },
+        success: function () {
+            showNotification("Friend removed successfully");
+            setTimeout(function () {
+                removeFriendFromUI(friendUsername);
+            }, 500);
+        },
+        error: function (error) {
+            alert("Error removing friend: " + error);
+        }
+    });
+}
+
+function getMutualFriends(friendUsername) {
+    var loggedUserName = sessionStorage.getItem("username");
+
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/mutual-friends",
+        headers: {
+            'loggedUserName': loggedUserName,
+            'friendUserName': friendUsername
+        },
+        success: function (response) {
+            displayMutualFriends(response);
+        },
+        error: function (error) {
+            alert("Error fetching mutual friends: " + error);
+        }
+    });
+}
+
+function displayMutualFriends(mutualFriends) {
+    var mutualFriendsList = $("#mutualFriendsList");
+
+    mutualFriends.forEach(function (friend) {
+        var listItem = $("<li>").text(friend);
+        mutualFriendsList.append(listItem);
+    });
+
+    // // Show the mutualFriendsContainer
+    // $("#mutualFriendsContainer").show();
+
 }

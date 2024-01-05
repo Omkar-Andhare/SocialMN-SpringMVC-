@@ -3,6 +3,7 @@ package org.example.socialMN.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -34,6 +35,8 @@ public class DaoImpl implements IDao {
         }
 
         Long count = query.uniqueResult();
+//        session.close();
+
         return count != null && count > 0;
     }
 
@@ -53,6 +56,8 @@ public class DaoImpl implements IDao {
         if (null != parameters && !parameters.isEmpty()) {
             parameters.forEach(query::setParameter);
         }
+//        session.close();
+
         return query.list();
     }
 
@@ -71,7 +76,37 @@ public class DaoImpl implements IDao {
         if (null != parameters && !parameters.isEmpty()) {
             parameters.forEach(query::setParameter);
         }
+//        session.close();
+
         return query.uniqueResult();
+    }
+
+
+
+    @Override
+    public <T> void executeHqlUpdate(String sql, Class<T> modelClass, Map<String, Object> parameters) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+
+            NativeQuery<?> query = session.createNativeQuery(sql);
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+
+                }
+            }
+
+            int rowsAffected = query.executeUpdate();
+
+
+            if (rowsAffected > 0) {
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -84,6 +119,8 @@ public class DaoImpl implements IDao {
         Transaction transaction = session.beginTransaction();
         session.save(model);
         transaction.commit();
+//        session.close();
+
     }
 }
 

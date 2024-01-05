@@ -68,8 +68,6 @@
     </form>
 </div>
 
-
-
 <script src="<c:url value="/resource/support/js/appjs/login.js"/>"></script>
 </body>
 </html>

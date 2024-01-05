@@ -2,6 +2,8 @@ package org.example.socialMN.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.example.socialMN.exceptions.LoginValidationException;
+import org.example.socialMN.exceptions.SignupValidationException;
 import org.example.socialMN.handler.LoginHandler;
 import org.example.socialMN.model.Login;
 import org.example.socialMN.model.User;
@@ -40,7 +42,11 @@ public class LoginController {
      * The User object containing registration details.
      */
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getRegisteredData(@RequestBody User user) {
+    public ResponseEntity<String> getRegisteredData(@RequestBody User user) throws SignupValidationException {
+
+        if (null == user.getUsername() && null == user.getEmail() && null == user.getPassword()) {
+            throw new SignupValidationException("Username , email, password cannot be Null");
+        }
         logger.info("Received registration request for user: " + user.getUsername());
         return loginHandler.handleRegistrationRequest(user);
     }
@@ -51,7 +57,7 @@ public class LoginController {
      * validate the user
      */
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody Login login) {
+    public ResponseEntity<String> loginUser(@RequestBody Login login) throws LoginValidationException {
         String username = login.getUsername();
         String password = login.getPassword();
         logger.info("Received login request - Username: " + username);

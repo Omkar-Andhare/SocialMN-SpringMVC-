@@ -26,7 +26,7 @@ function signupUser() {
         contentType: "application/json",
         data: JSON.stringify(userData),
         success: function () {
-            // alert("Sign Up successfully..!");
+            alert("Sign Up successfully..!");
             window.location.href = "/SocialMN/user/login";
 
 

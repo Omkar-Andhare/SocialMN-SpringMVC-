@@ -3,6 +3,7 @@ package org.example.socialMN.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.example.socialMN.dto.FriendOfFriendsDTO;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.handler.UserHandler;
 import org.example.socialMN.model.User;
@@ -24,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserHandler userHandler;
+
+    @Autowired
+    private IService iService;
 
     /**
      * Handles a POST request to retrieve user data based on provided credentials.
@@ -78,13 +82,39 @@ public class UserController {
      * friendUserName  The username of the friend to be removed (provided in the request header).
      * return ResponseEntity containing the result that friend removed or not.
      */
-    @DeleteMapping(value = "/remove-friend")
-    public ResponseEntity<?> removeFriend(@RequestHeader String userName,
-                                               @RequestHeader String friendUserName) {
-        logger.info("Received remove friend request - User: " + userName + ", Friend:" + friendUserName);
+    @DeleteMapping("/remove-friend")
+    public ResponseEntity<String> removeFriend(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) {
+        logger.info("Received remove friend request - User: " + loggedUserName + ", Friend: " + friendUserName);
 
-        return userHandler.handleRemoveFriend(userName, friendUserName);
+        userHandler.handleRemoveFriend(loggedUserName, friendUserName);
+        return ResponseEntity.ok("friend remove successfully");
     }
+
+    @GetMapping("/mutual-friends")
+    public ResponseEntity<List<String>> getMutualFriends(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) {
+        logger.info("Received request for mutual friends - User: " + loggedUserName + ", Friend: " + friendUserName);
+        List<String> mutualFriends = userHandler.getMutualFriends(loggedUserName, friendUserName);
+        return ResponseEntity.ok(mutualFriends);
+    }
+
+    @GetMapping("/are-friends")
+    public ResponseEntity<Boolean> areFriends(
+            @RequestParam("user1") String loggedUserName,
+            @RequestParam("user2") String username
+    ) {
+        boolean areFriends = userHandler.areFriends(loggedUserName, username);
+        return ResponseEntity.ok(areFriends);
+    }
+
+    @GetMapping("/friends-of-friend")
+    public ResponseEntity<List<FriendOfFriendsDTO>> getFriendsOfFriend(
+            @RequestParam("loggedInUsername") String loggedInUsername,
+            @RequestParam("friendUsername") String friendUsername) {
+
+        List<FriendOfFriendsDTO> friendsOfFriend = userHandler.getFriendsOfFriend(loggedInUsername, friendUsername);
+        return ResponseEntity.ok(friendsOfFriend);
+    }
+
 
 
 }

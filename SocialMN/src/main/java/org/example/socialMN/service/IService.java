@@ -1,5 +1,7 @@
 package org.example.socialMN.service;
 
+import org.example.socialMN.dto.FriendOfFriendsDTO;
+import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.model.User;
 
 import java.util.List;
@@ -20,7 +22,10 @@ public interface IService {
 
     List<User> getUserFriends(String loggedUserName);
 
-    void removeFriend(String userName, String friendUserName);
+    void removeFriend(String loggedUserName, String friendUserName);
+
+    boolean isFriends(User user, User friend);
 
 
+    List<FriendOfFriendsDTO> findFriendsOfFriend(String loggedInUsername, String friendUsername);
 }

@@ -3,10 +3,10 @@ package org.example.socialMN.service;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.example.socialMN.dao.IDao;
+import org.example.socialMN.dto.FriendOfFriendsDTO;
+import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceImpl implements IService {
     private static final Logger logger = LogManager.getLogger(IService.class);
+
     @Autowired
-    private SessionFactory sessionFactory;
+    private IService iService;
+
 
     @Autowired
     private IDao dao;
@@ -211,8 +213,39 @@ public class ServiceImpl implements IService {
     }
 
     @Override
-    public void removeFriend(String userName, String friendUserName) {
+    public void removeFriend(String loggedUserName, String friendUserName) {
 
+        String sql = "DELETE FROM user_friends " +
+                "WHERE " +
+                "(user_id IN (SELECT id FROM User WHERE username = :loggedUserName) AND friend_id IN (SELECT id FROM User WHERE username = :friendUserName)) " +
+                "OR " +
+                "(user_id IN (SELECT id FROM User WHERE username = :friendUserName) AND friend_id IN (SELECT id FROM User WHERE username = :loggedUserName))";
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("loggedUserName", loggedUserName);
+        parameters.put("friendUserName", friendUserName);
+        dao.executeHqlUpdate(sql, Friendship.class, parameters);
+    }
+
+    @Override
+    public boolean isFriends(User user, User friend) {
+        String hql = "SELECT COUNT(f) FROM Friendship f " +
+                "WHERE (f.user.username = :user AND f.friend.username = :friend) " +
+                "OR (f.user.username = :friend AND f.friend.username = :user)";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("user", user.getUsername());
+        parameters.put("friend", friend.getUsername());
+
+        Long count = dao.executeHqlQuerySingleResult(hql, Long.class, parameters);
+
+        return count > 0;
+    }
+
+    @Override
+    public List<FriendOfFriendsDTO> findFriendsOfFriend(String loggedInUsername, String friendUsername) {
+
+
+        return null;
     }
 
 
