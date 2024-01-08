@@ -130,27 +130,30 @@ public class ServiceImpl implements IService {
             logger.info("Suggested friends retrieved successfully for " + loggedUserName);
 
             return suggestedFriends;
+        }else {
+
+            // If the user has friends, exclude them from the list of suggested friends
+            List<String> friendUsernames = userFriends.stream()
+                    .map(User::getUsername)
+                    .collect(Collectors.toList());
+
+            // Define the HQL to select suggested friends who are not already friends
+            String hql = "FROM " + User.class.getName() + " WHERE username != :userName AND username NOT IN :friendUsernames";
+
+            // Prepare parameters for the HQL query
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("userName", loggedUserName);
+            parameters.put("friendUsernames", friendUsernames);
+
+
+            // Execute the HQL query
+            List<User> suggestedFriends = dao.executeHqlQuery(hql, User.class, parameters);
+
+
+            logger.info("Suggested friends retrieved successfully for " + loggedUserName);
+
+            return suggestedFriends;
         }
-
-        // If the user has friends, exclude them from the list of suggested friends
-        List<String> friendUsernames = userFriends.stream()
-                .map(User::getUsername)
-                .collect(Collectors.toList());
-
-        // Define the HQL to select suggested friends who are not already friends
-        String hql = "FROM " + User.class.getName() + " WHERE username != :userName AND username NOT IN :friendUsernames";
-
-        // Prepare parameters for the HQL query
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("userName", loggedUserName);
-        parameters.put("friendUsernames", friendUsernames);
-
-        // Execute the HQL query
-        List<User> suggestedFriends = dao.executeHqlQuery(hql, User.class, parameters);
-
-        logger.info("Suggested friends retrieved successfully for " + loggedUserName);
-
-        return suggestedFriends;
     }
 
 
@@ -242,10 +245,9 @@ public class ServiceImpl implements IService {
     }
 
     @Override
-    public List<FriendOfFriendsDTO> findFriendsOfFriend(String loggedInUsername, String friendUsername) {
+    public List<User> findFriendsOfFriend(User loggedInUsername, User friendUsername) {
 
-
-        return null;
+        return iService.getUserFriends(String.valueOf(friendUsername));
     }
 
 

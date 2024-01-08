@@ -9,6 +9,8 @@ function signupUser() {
     var email = document.getElementById('email').value;
 
 
+
+
     var userData = {
         "username": username,
         "password": password,
@@ -19,6 +21,12 @@ function signupUser() {
         "bio": bio,
         "email": email
     };
+
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData.email)) {
+        alert("Email should be in a valid format.");
+        return;
+    }
 
     $.ajax({
         type: "POST",
@@ -32,9 +40,10 @@ function signupUser() {
 
         },
         error: function () {
-            alert("sign up failed ");
+            alert("sign up failed , check password or email format ");
         }
     });
-
-
 }
+
+
+

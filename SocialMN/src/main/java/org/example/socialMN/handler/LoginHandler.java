@@ -18,8 +18,30 @@ public class LoginHandler {
     @Autowired
     private IService iService;
 
+
+
+    public ResponseEntity<String> handleRegistrationRequest(User user) throws SignupValidationException {
+
+        logger.info("validating the username , password, email");
+        /**
+         * Validates the username format to ensure it contains only letters, numbers, and underscores.
+         * Throws a LoginValidationException if the username contains invalid characters.
+         */
+        if (!user.getUsername().matches("[a-zA-Z0-9_]+")) {
+            throw new SignupValidationException("Username can only contain letters, numbers, and underscores");
+        }
+        validatePassword(user.getPassword());
+        validateEmail(user.getEmail());
+
+
+        logger.info("Received registration request for user:" + user.getUsername());
+        iService.addUser(user);
+        logger.info("User registered successfully - Username: " + user.getUsername());
+        return ResponseEntity.ok("Registered Successfully");
+    }
+
     static void validatePassword(String password) throws SignupValidationException {
-        if (password.length() < 8) {
+        if (password.length() <= 8) {
             throw new SignupValidationException("Password must be at least 8 characters long");
         }
 
@@ -45,26 +67,6 @@ public class LoginHandler {
             throw new SignupValidationException("Invalid email format");
         }
 
-    }
-
-    public ResponseEntity<String> handleRegistrationRequest(User user) throws SignupValidationException {
-
-        logger.info("validating the username , password, email");
-        /**
-         * Validates the username format to ensure it contains only letters, numbers, and underscores.
-         * Throws a LoginValidationException if the username contains invalid characters.
-         */
-        if (!user.getUsername().matches("[a-zA-Z0-9_]+")) {
-            throw new SignupValidationException("Username can only contain letters, numbers, and underscores");
-        }
-        validatePassword(user.getPassword());
-        validateEmail(user.getEmail());
-
-
-        logger.info("Received registration request for user:" + user.getUsername());
-        iService.addUser(user);
-        logger.info("User registered successfully - Username: " + user.getUsername());
-        return ResponseEntity.ok("Registered Successfully");
     }
 
     public ResponseEntity<String> validateUser(String username, String password)  {

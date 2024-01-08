@@ -47,7 +47,10 @@ function logout() {
 }
 
 
-function getSuggestedFriends() {
+
+$(document).ready(function getSuggestedFriendsList() {
+    // console.log("Before AJAX call");
+
 
     var loggedUserName = sessionStorage.getItem("username");
     $.ajax({
@@ -65,10 +68,15 @@ function getSuggestedFriends() {
             alert("Error fetching suggested friends" + error);
         }
     });
-}
+    // console.log("After AJAX call");
+
+});
+
 
 function displayFriends(friends) {
     var friendList = $("#friendList");
+    friendList.empty(); // Clear the existing list
+
 
     friends.forEach(function (friend) {
         var listItem = $("<li>").addClass("list-item");
@@ -76,6 +84,7 @@ function displayFriends(friends) {
 
         var addButton = $("<button>").addClass("add-button");
         addButton.text("Add Friend");
+
         addButton.click(function () {
             addFriend(friend.username);
 
@@ -86,7 +95,6 @@ function displayFriends(friends) {
     });
 }
 
-getSuggestedFriends();
 
 function addFriend(friendUsername) {
     var loggedUserName = sessionStorage.getItem("username");
@@ -186,7 +194,6 @@ function displayUserFriends(userFriends) {
         });
 
 
-
         listItem.append(removeButton);
         listItem.append(mutualButton);
         $("#userFriendsList").append(listItem);
@@ -236,14 +243,12 @@ function getMutualFriends(friendUsername) {
 }
 
 function displayMutualFriends(mutualFriends) {
-    var mutualFriendsList = $("#mutualFriendsList");
+    if (mutualFriends.length > 0) {
+        var message = "Mutual Friends:\n" + mutualFriends.join("\n");
+        alert(message);
+    } else {
+        alert("No mutual friends found.");
+    }
 
-    mutualFriends.forEach(function (friend) {
-        var listItem = $("<li>").text(friend);
-        mutualFriendsList.append(listItem);
-    });
-
-    // // Show the mutualFriendsContainer
-    // $("#mutualFriendsContainer").show();
 
 }

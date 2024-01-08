@@ -3,7 +3,6 @@ package org.example.socialMN.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.example.socialMN.dto.FriendOfFriendsDTO;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.handler.UserHandler;
 import org.example.socialMN.model.User;
@@ -26,8 +25,6 @@ public class UserController {
     @Autowired
     private UserHandler userHandler;
 
-    @Autowired
-    private IService iService;
 
     /**
      * Handles a POST request to retrieve user data based on provided credentials.
@@ -47,10 +44,19 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getFriendsSuggestions(
             @RequestHeader(value = "user-name") String loggedUserName
     ) {
-        //TODO validate if user name is passed or not
-        List<UserDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
+        try {
+            // Validate if the username is passed or not
+            if (loggedUserName == null || loggedUserName.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
 
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+            List<UserDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
+
+            return new ResponseEntity<>(userList, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -107,14 +113,13 @@ public class UserController {
     }
 
     @GetMapping("/friends-of-friend")
-    public ResponseEntity<List<FriendOfFriendsDTO>> getFriendsOfFriend(
-            @RequestParam("loggedInUsername") String loggedInUsername,
-            @RequestParam("friendUsername") String friendUsername) {
+    public ResponseEntity<List<User>> getFriendsOfFriend(
+            @RequestParam("loggedInUsername") User loggedInUsername,
+            @RequestParam("friendUsername") User friendUsername) {
 
-        List<FriendOfFriendsDTO> friendsOfFriend = userHandler.getFriendsOfFriend(loggedInUsername, friendUsername);
+        List<User> friendsOfFriend = userHandler.getFriendsOfFriend(loggedInUsername, friendUsername);
         return ResponseEntity.ok(friendsOfFriend);
     }
-
 
 
 }

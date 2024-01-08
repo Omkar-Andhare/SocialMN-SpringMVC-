@@ -18,7 +18,7 @@ public class UserDTO {
     private String dateOfBirth;
 
     private String gender;
-    private Set<User> friends = new HashSet<>();
+    private Set<User> friends = new HashSet<>();//take FriendDTO here
 
     private String profilePicture;
     private String bio;

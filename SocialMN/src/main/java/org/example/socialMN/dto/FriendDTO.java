@@ -1,17 +1,20 @@
 package org.example.socialMN.dto;
 
-public class FriendOfFriendsDTO {
+public class FriendDTO {
 
-    public FriendOfFriendsDTO(String username) {
-        this.username = username;
+    private String username;
+
+    public FriendDTO() {
+
     }
 
-    public FriendOfFriendsDTO() {
+    public FriendDTO(String username) {
+        this.username = username;
     }
 
     @Override
     public String toString() {
-        return "FriendOfFriendsDTO{" +
+        return "FriendDTO{" +
                 "username='" + username + '\'' +
                 '}';
     }
@@ -23,6 +26,4 @@ public class FriendOfFriendsDTO {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    private String username;
 }

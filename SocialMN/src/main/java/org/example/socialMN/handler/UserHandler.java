@@ -46,7 +46,7 @@ public class UserHandler {
     private UserDTO mapUserToDTO(User user) {
         UserDTO userDTO = new UserDTO();
 
-        BeanUtils.copyProperties(user,userDTO);
+        BeanUtils.copyProperties(user, userDTO);
 //        userDTO.setUsername(user.getUsername());
 //        userDTO.setFullname(user.getFullname());
 
@@ -109,25 +109,6 @@ public class UserHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User or friend not found");
     }
 
-
-//    public boolean areFriends(User user, User friend) {
-//
-//
-//          /*
-//        incomplete first find out the friends of user
-//         */
-//        List<Friendship> friendships = user.getFriendList();
-//        if (friendships != null) {
-//            for (Friendship friendship : friendships) {
-//                if (friendship.getFriend().equals(friend)) {
-//                    return true; // Friendship already exists
-//                }
-//            }
-//        }
-//        return false; // They are not friends
-//    }
-
-
     public List<String> getMutualFriends(String loggedUserName, String friendUserName) {
         List<String> loggedUserFriends = getUserFriends(loggedUserName);
         List<String> friendFriends = getUserFriends(friendUserName);
@@ -161,7 +142,11 @@ public class UserHandler {
 
     }
 
-    public List<FriendOfFriendsDTO> getFriendsOfFriend(String loggedInUsername, String friendUsername) {
+    public List<User> getFriendsOfFriend(User loggedInUsername, User friendUsername) {
+
+        User user = new User();
+        FriendOfFriendsDTO friend = new FriendOfFriendsDTO();
+        BeanUtils.copyProperties(user, friend);
 
         return iService.findFriendsOfFriend(loggedInUsername, friendUsername);
     }
