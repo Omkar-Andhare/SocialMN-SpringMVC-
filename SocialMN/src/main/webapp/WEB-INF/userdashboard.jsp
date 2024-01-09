@@ -390,6 +390,18 @@
             background-color: #45a049;
         }
 
+        .view-friendsButton{
+            background-color: #ff9800;
+            color: #fff;
+            padding: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+
+
+        }
+
         .friends-button {
             background-color: #3498db;
             color: #fff;

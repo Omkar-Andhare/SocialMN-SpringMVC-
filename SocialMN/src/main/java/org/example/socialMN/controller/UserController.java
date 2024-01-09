@@ -3,6 +3,7 @@ package org.example.socialMN.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.example.socialMN.dto.FriendDTO;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.handler.UserHandler;
 import org.example.socialMN.model.User;
@@ -41,7 +42,7 @@ public class UserController {
      * return ResponseEntity containing a list of suggested friends for the logged-in user.
      */
     @GetMapping(value = "/suggested-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> getFriendsSuggestions(
+    public ResponseEntity<List<FriendDTO>> getFriendsSuggestions(
             @RequestHeader(value = "user-name") String loggedUserName
     ) {
         try {
@@ -50,7 +51,7 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            List<UserDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
+            List<FriendDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
 
             return new ResponseEntity<>(userList, HttpStatus.OK);
         } catch (Exception e) {
@@ -110,15 +111,6 @@ public class UserController {
     ) {
         boolean areFriends = userHandler.areFriends(loggedUserName, username);
         return ResponseEntity.ok(areFriends);
-    }
-
-    @GetMapping("/friends-of-friend")
-    public ResponseEntity<List<User>> getFriendsOfFriend(
-            @RequestParam("loggedInUsername") User loggedInUsername,
-            @RequestParam("friendUsername") User friendUsername) {
-
-        List<User> friendsOfFriend = userHandler.getFriendsOfFriend(loggedInUsername, friendUsername);
-        return ResponseEntity.ok(friendsOfFriend);
     }
 
 

@@ -27,5 +27,5 @@ public interface IService {
     boolean isFriends(User user, User friend);
 
 
-    List<User> findFriendsOfFriend(User loggedInUsername, User friendUsername);
+//    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);
 }

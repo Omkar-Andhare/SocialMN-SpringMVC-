@@ -2,7 +2,7 @@ package org.example.socialMN.handler;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.example.socialMN.dto.FriendOfFriendsDTO;
+import org.example.socialMN.dto.FriendDTO;
 import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,6 +26,7 @@ public class UserHandler {
 
     @Autowired
     private IService iService;
+
 
     public ResponseEntity<?> handleUserDataRequest(User userCredentials) {
 
@@ -45,45 +43,49 @@ public class UserHandler {
 
     private UserDTO mapUserToDTO(User user) {
         UserDTO userDTO = new UserDTO();
-
         BeanUtils.copyProperties(user, userDTO);
-//        userDTO.setUsername(user.getUsername());
-//        userDTO.setFullname(user.getFullname());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateOfBirth = dateFormat.format(user.getDateOfBirth());
         userDTO.setDateOfBirth(formattedDateOfBirth);
-
-//        userDTO.setGender(user.getGender());
-//        userDTO.setProfilePicture(user.getProfilePicture());
-//        userDTO.setBio(user.getBio());
-//        userDTO.setEmail(user.getEmail());
-
-        if (null != user.getFriendList() && !user.getFriendList().isEmpty()) {
-            userDTO.setFriends(user.getFriendList().stream().map(Friendship::getFriend).collect(Collectors.toSet()));
-        }
+        
         logger.debug("Mapped user data to DTO successfully");
 
         return userDTO;
     }
 
+    public FriendDTO mapToFriendDTO(User user) {
+        FriendDTO friendDTO = new FriendDTO();
+        BeanUtils.copyProperties(user, friendDTO);
+        return friendDTO;
 
-    public List<UserDTO> handleSuggestedFriends(String loggedUserName) {
+    }
+
+    public List<FriendDTO> handleSuggestedFriends(String loggedUserName) {
         logger.info("Received request to get suggested friends for user: " + loggedUserName);
 
         List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
-        return allUsers.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
+        List<FriendDTO> list = new ArrayList<>();
+        for (User user : allUsers) {
+            FriendDTO friendDTO = mapToFriendDTO(user);
+            list.add(friendDTO);
+        }
+        return list;
     }
 
     public List<UserDTO> handleGetUserFriends(String loggedUserName) {
         List<User> userFriends = iService.getUserFriends(loggedUserName);
-        return userFriends.stream().map(user -> mapUserToDTO(user)).collect(Collectors.toList());
+        List<UserDTO> list = new ArrayList<>();
+        for (User user : userFriends) {
+            UserDTO userDTO = mapUserToDTO(user);
+            list.add(userDTO);
+        }
+        return list;
     }
 
     public void handleRemoveFriend(String loggedUserName, String friendUserName) {
         iService.removeFriend(loggedUserName, friendUserName);
     }
-
 
     public ResponseEntity<String> handleAddFriendRequest(String userName, String friendUserName) {
         logger.info("Received request to add friend - User: {}, Friend: {}" + userName + "," + friendUserName);
@@ -129,7 +131,6 @@ public class UserHandler {
         return Collections.emptyList();
     }
 
-
     public boolean areFriends(String loggedUserName, String username) {
         User user1 = iService.getByUsername(loggedUserName);
         User user2 = iService.getByUsername(username);
@@ -142,12 +143,5 @@ public class UserHandler {
 
     }
 
-    public List<User> getFriendsOfFriend(User loggedInUsername, User friendUsername) {
 
-        User user = new User();
-        FriendOfFriendsDTO friend = new FriendOfFriendsDTO();
-        BeanUtils.copyProperties(user, friend);
-
-        return iService.findFriendsOfFriend(loggedInUsername, friendUsername);
-    }
 }

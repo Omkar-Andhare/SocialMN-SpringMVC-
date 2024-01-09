@@ -18,7 +18,7 @@ public class UserDTO {
     private String dateOfBirth;
 
     private String gender;
-    private Set<User> friends = new HashSet<>();//take FriendDTO here
+    private Set<FriendDTO> friends = new HashSet<>();//take FriendDTO here
 
     private String profilePicture;
     private String bio;
@@ -27,7 +27,7 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String username,  String fullname, Date dateOfBirth, String gender, Set<User> friends, String profilePicture, String bio, String email) {
+    public UserDTO(String username,  String fullname, Date dateOfBirth, String gender, Set<FriendDTO> friends, String profilePicture, String bio, String email) {
         this.username = username;
         this.fullname = fullname;
         this.dateOfBirth = String.valueOf(dateOfBirth);
@@ -95,11 +95,11 @@ public class UserDTO {
         this.gender = gender;
     }
 
-    public Set<User> getFriends() {
+    public Set<FriendDTO> getFriends() {
         return friends;
     }
 
-    public void setFriends(Set<User> friends) {
+    public void setFriends(Set<FriendDTO> friends) {
         this.friends = friends;
     }
 

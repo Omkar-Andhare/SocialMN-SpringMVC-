@@ -4,9 +4,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.example.socialMN.dao.IDao;
 import org.example.socialMN.dto.FriendOfFriendsDTO;
-import org.example.socialMN.dto.UserDTO;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,7 +130,7 @@ public class ServiceImpl implements IService {
             logger.info("Suggested friends retrieved successfully for " + loggedUserName);
 
             return suggestedFriends;
-        }else {
+        } else {
 
             // If the user has friends, exclude them from the list of suggested friends
             List<String> friendUsernames = userFriends.stream()
@@ -244,11 +244,7 @@ public class ServiceImpl implements IService {
         return count > 0;
     }
 
-    @Override
-    public List<User> findFriendsOfFriend(User loggedInUsername, User friendUsername) {
 
-        return iService.getUserFriends(String.valueOf(friendUsername));
-    }
 
 
 }

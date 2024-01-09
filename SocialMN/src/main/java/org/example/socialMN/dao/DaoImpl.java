@@ -54,9 +54,12 @@ public class DaoImpl implements IDao {
         Session session = sessionFactory.openSession();
         Query<T> query = session.createQuery(hql, modelClass);
         if (null != parameters && !parameters.isEmpty()) {
-            parameters.forEach(query::setParameter);
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                query.setParameter(key, value);
+            }
         }
-//        session.close();
 
         return query.list();
     }
