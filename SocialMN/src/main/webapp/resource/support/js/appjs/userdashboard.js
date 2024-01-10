@@ -158,6 +158,9 @@ function loadUserFriends() {
 
 
 function displayUserFriends(userFriends) {
+
+    var username = sessionStorage.getItem("username");
+
     var userFriendsList = $("#userFriendsList");
     userFriendsList.empty(); // Clear the existing list
 
@@ -180,10 +183,17 @@ function displayUserFriends(userFriends) {
             viewFriends(friend.username);
         });
 
+        var viewProfileButton = $("<button>").addClass("view-profile-button").text("View Profile");
+        viewProfileButton.click(function () {
+            viewProfile(friend.username);
+        });
+
 
         listItem.append(removeButton);
         listItem.append(mutualButton);
         listItem.append(friendsButton);
+        listItem.append(viewProfileButton);
+
 
         $("#userFriendsList").append(listItem);
     });
@@ -234,7 +244,8 @@ function displayMutualFriends(mutualFriends) {
 function viewFriends(username) {
 
     $.ajax({
-        type: "GET", url: "/SocialMN/user/user-friends",
+        type: "GET",
+        url: "/SocialMN/user/user-friends",
         headers: {
             'user-name': username
         },
@@ -264,3 +275,34 @@ function view(response) {
     }
 
 }
+
+function viewProfile(username) {
+
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/view-profile",
+        contentType: "application/json",
+        headers: {
+            'user-name': username
+        },
+        success: function (response) {
+            // alert("fetching data successfully");
+            var message = "Username: " + response.username +
+                "\nFull Name: " + response.fullname +
+                "\nDate of Birth: " + response.dateOfBirth +
+                "\nBio: " + response.bio +
+                "\nEmail: " + response.email;
+            alert(message);
+        },
+        error: function (error) {
+            alert("Error fetching user profile: " + error);
+        }
+    });
+}
+
+// function displayProfile(profileData) {
+//     // Modify this function to display the user profile details in a modal or any other UI element
+//     // You can access profile data like profileData.username, profileData.email, etc.
+//     console.log(profileData);
+// }
+

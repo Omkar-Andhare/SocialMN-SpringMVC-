@@ -37,7 +37,7 @@ public class UserHandler {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    private UserDTO mapUserToDTO(User user) {
+    public UserDTO mapUserToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -97,10 +97,10 @@ public class UserHandler {
         try {
             List<String> loggedUserFriends = getUserFriends(loggedUserName);
 
-        List<String> friendFriends = getUserFriends(friendUserName);
-        loggedUserFriends.retainAll(friendFriends);
-        return loggedUserFriends;
-    }catch (Exception e){
+            List<String> friendFriends = getUserFriends(friendUserName);
+            loggedUserFriends.retainAll(friendFriends);
+            return loggedUserFriends;
+        } catch (Exception e) {
             throw new MutualFriendsException("Error retrieving mutual friends: " + e.getMessage());
 
         }
@@ -122,5 +122,9 @@ public class UserHandler {
             return iService.isFriends(user1, user2);
         }
         return false;
+    }
+
+    public User getByUsername(String username) {
+        return iService.getByUsername(username);
     }
 }

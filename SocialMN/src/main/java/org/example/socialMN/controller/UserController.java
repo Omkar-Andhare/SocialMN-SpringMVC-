@@ -127,6 +127,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }
+
+    @GetMapping("/view-profile")
+    public ResponseEntity<UserDTO> viewProfile(@RequestHeader(value = "user-name") String username) {
+        try {
+            User user = userHandler.getByUsername(username);
+            UserDTO userDTO = userHandler.mapUserToDTO(user);
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
 
 

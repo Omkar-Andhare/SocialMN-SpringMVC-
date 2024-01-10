@@ -390,7 +390,7 @@
             background-color: #45a049;
         }
 
-        .view-friendsButton{
+        .view-friendsButton, .view-profile-button,.mutual-button{
             background-color: #ff9800;
             color: #fff;
             padding: 5px;
@@ -398,9 +398,15 @@
             border-radius: 4px;
             cursor: pointer;
             margin-right: 10px;
-
-
         }
+
+        .view-friendsButton:hover,
+        .view-profile-button:hover,
+        .mutual-button:hover {
+            background-color: #e08000; /* Slightly darker shade on hover */
+        }
+
+
 
         .friends-button {
             background-color: #3498db;
@@ -441,7 +447,7 @@
             position: relative;
         }
 
-        .remove-button, .mutual-button {
+        .remove-button{
             background-color: #e74c3c;
             color: #fff;
             padding: 5px;
@@ -450,7 +456,7 @@
             cursor: pointer;
             margin-right: 10px;        }
 
-        .remove-button:hover, .mutual-button:hover {
+        .remove-button:hover{
             background-color: #c0392b;
         }
 
