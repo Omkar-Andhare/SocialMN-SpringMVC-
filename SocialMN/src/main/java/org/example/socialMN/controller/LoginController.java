@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
     private static final Logger logger = LogManager.getLogger(IService.class);
 
-
     @Autowired
     private LoginHandler loginHandler;
 
@@ -33,7 +32,6 @@ public class LoginController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         logger.info("Received logout request");
-
         return ResponseEntity.ok("Logout successful");
     }
 
@@ -43,7 +41,6 @@ public class LoginController {
      */
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRegisteredData(@RequestBody User user) throws SignupValidationException {
-
         if (null == user.getUsername() && null == user.getEmail() && null == user.getPassword()) {
             throw new SignupValidationException("Username , email, password cannot be Null");
         }

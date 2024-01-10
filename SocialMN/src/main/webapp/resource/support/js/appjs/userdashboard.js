@@ -137,7 +137,8 @@ function loadUserFriends() {
     var loggedUserName = sessionStorage.getItem("username");
 
     $.ajax({
-        type: "GET", url: "/SocialMN/user/user-friends", headers: {
+        type: "GET", url: "/SocialMN/user/user-friends",
+        headers: {
             'user-name': loggedUserName
         }, success: function (response) {
             displayUserFriends(response);
@@ -233,15 +234,19 @@ function displayMutualFriends(mutualFriends) {
 function viewFriends(username) {
 
     $.ajax({
-        type: "GET", url: "/SocialMN/user/user-friends", headers: {
+        type: "GET", url: "/SocialMN/user/user-friends",
+        headers: {
             'user-name': username
-        }, success: function (response) {
+        },
+        success: function (response) {
             view(response);
-        }, error: function (error) {
+        },
+        error: function (error) {
             alert("Error fetching user friends: " + error);
         }
     });
 }
+
 
 function view(response) {
     if (response.length > 0) {
@@ -250,13 +255,12 @@ function view(response) {
         for (var i = 0; i < response.length; i++) {
             // Extract the username of the friend
             var friendUsername = response[i].username;
-            // Append the username to the string, followed by a newline character
             usernames += friendUsername + "\n";
         }
         var message = "Friends:\n" + usernames;
         alert(message);
     } else {
-        alert("No friends !!!!!!!!!!!.");
+        alert("Only You");
     }
 
 }

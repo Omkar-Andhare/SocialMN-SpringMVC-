@@ -5,6 +5,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.example.socialMN.dto.FriendDTO;
 import org.example.socialMN.dto.UserDTO;
+import org.example.socialMN.exceptions.*;
 import org.example.socialMN.handler.UserHandler;
 import org.example.socialMN.model.User;
 import org.example.socialMN.service.IService;
@@ -32,8 +33,15 @@ public class UserController {
      * userCredentials The user credentials sent in the request body.
      */
     @PostMapping(value = "/details", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserData(@RequestBody User userCredentials) {
-        return userHandler.handleUserDataRequest(userCredentials);
+    public ResponseEntity<?> getUserData(@RequestBody User userCredentials) throws UserDataRetrievalException {
+        try {
+            return userHandler.handleUserDataRequest(userCredentials);
+        } catch (UserDataRetrievalException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Handle other exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     /**
@@ -42,17 +50,13 @@ public class UserController {
      * return ResponseEntity containing a list of suggested friends for the logged-in user.
      */
     @GetMapping(value = "/suggested-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FriendDTO>> getFriendsSuggestions(
-            @RequestHeader(value = "user-name") String loggedUserName
-    ) {
+    public ResponseEntity<List<FriendDTO>> getFriendsSuggestions(@RequestHeader(value = "user-name") String loggedUserName) {
         try {
             // Validate if the username is passed or not
             if (loggedUserName == null || loggedUserName.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-
             List<FriendDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
-
             return new ResponseEntity<>(userList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,17 +72,19 @@ public class UserController {
      */
 
     @PostMapping(value = "/add-friend", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addFriends(@RequestHeader String userName,
-                                             @RequestHeader String friendUserName) {
+    public ResponseEntity<String> addFriends(@RequestHeader String userName, @RequestHeader String friendUserName) {
         logger.info("Received add friend request - User: " + userName + ", Friend:" + friendUserName);
 
-        return userHandler.handleAddFriendRequest(userName, friendUserName);
+        try {
+            userHandler.handleAddFriendRequest(userName, friendUserName);
+            return ResponseEntity.ok("Added Successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping(value = "/user-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> getUserFriends(
-            @RequestHeader(value = "user-name") String loggedUserName
-    ) {
+    public ResponseEntity<List<UserDTO>> getUserFriends(@RequestHeader(value = "user-name") String loggedUserName) throws UserFriendsException {
         List<UserDTO> userFriends = userHandler.handleGetUserFriends(loggedUserName);
         return new ResponseEntity<>(userFriends, HttpStatus.OK);
     }
@@ -90,28 +96,38 @@ public class UserController {
      * return ResponseEntity containing the result that friend removed or not.
      */
     @DeleteMapping("/remove-friend")
-    public ResponseEntity<String> removeFriend(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) {
-        logger.info("Received remove friend request - User: " + loggedUserName + ", Friend: " + friendUserName);
-
-        userHandler.handleRemoveFriend(loggedUserName, friendUserName);
-        return ResponseEntity.ok("friend remove successfully");
+    public ResponseEntity<String> removeFriend(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) throws RemoveFriendException {
+        try {
+            logger.info("Received remove friend request - User: " + loggedUserName + ", Friend: " + friendUserName);
+            userHandler.handleRemoveFriend(loggedUserName, friendUserName);
+            return ResponseEntity.ok("Friend removed successfully");
+        } catch (RemoveFriendException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Handle other exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @GetMapping("/mutual-friends")
-    public ResponseEntity<List<String>> getMutualFriends(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) {
+    public ResponseEntity<List<String>> getMutualFriends(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) throws MutualFriendsException {
         logger.info("Received request for mutual friends - User: " + loggedUserName + ", Friend: " + friendUserName);
         List<String> mutualFriends = userHandler.getMutualFriends(loggedUserName, friendUserName);
         return ResponseEntity.ok(mutualFriends);
     }
 
     @GetMapping("/are-friends")
-    public ResponseEntity<Boolean> areFriends(
-            @RequestParam("user1") String loggedUserName,
-            @RequestParam("user2") String username
-    ) {
-        boolean areFriends = userHandler.areFriends(loggedUserName, username);
-        return ResponseEntity.ok(areFriends);
+    public ResponseEntity<Boolean> areFriends(@RequestParam("user1") String loggedUserName, @RequestParam("user2") String username) {
+        try {
+            boolean areFriends = userHandler.areFriends(loggedUserName, username);
+            return ResponseEntity.ok(areFriends);
+        } catch (AreFriendsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
     }
-
-
 }
+
+
+
