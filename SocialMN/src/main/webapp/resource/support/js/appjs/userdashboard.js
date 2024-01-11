@@ -216,6 +216,7 @@ function removeFriend(friendUsername) {
     });
 }
 
+
 function getMutualFriends(friendUsername) {
     var loggedUserName = sessionStorage.getItem("username");
 
@@ -231,14 +232,25 @@ function getMutualFriends(friendUsername) {
 }
 
 function displayMutualFriends(mutualFriends) {
+    // if (mutualFriends.length > 0) {
+    //     var message = "Mutual Friends:\n" + mutualFriends.join("\n");
+    //     alert(message);
+    // } else {
+    //     alert("No mutual friends found.");
+    // }
+    var mutualFriendsContent = document.getElementById('mutualFriendsContent');
+
     if (mutualFriends.length > 0) {
-        var message = "Mutual Friends:\n" + mutualFriends.join("\n");
-        alert(message);
+        var usernames = mutualFriends.map(function (friend) {
+            return `<li>${friend}</li>`;
+        });
+
+        var mutualFriendsHTML = `<div><h1>Mutual Friends</h1><ul>${usernames.join('')}</ul></div>`;
+        mutualFriendsContent.innerHTML = mutualFriendsHTML;
     } else {
-        alert("No mutual friends found.");
+        mutualFriendsContent.innerHTML = "<p>No mutual friends found.</p>";
     }
-
-
+    openPopup('mutualFriendsPopup');
 }
 
 function viewFriends(username) {
@@ -260,21 +272,66 @@ function viewFriends(username) {
 
 
 function view(response) {
+    // if (response.length > 0) {
+    //     var usernames = "";
+    //     // Iterate over each friend in the response
+    //     for (var i = 0; i < response.length; i++) {
+    //         // Extract the username of the friend
+    //         var friendUsername = response[i].username;
+    //         usernames += friendUsername + "\n";
+    //     }
+    //     var message = "Friends:\n" + usernames;
+    //     alert(message);
+    // } else {
+    //     alert("Only You");
+    // }
+
+    var friendListContent = document.getElementById('friendListContent');
+
     if (response.length > 0) {
         var usernames = "";
-        // Iterate over each friend in the response
         for (var i = 0; i < response.length; i++) {
-            // Extract the username of the friend
             var friendUsername = response[i].username;
-            usernames += friendUsername + "\n";
+            usernames += `<li>${friendUsername}</li>`;
         }
-        var message = "Friends:\n" + usernames;
-        alert(message);
+
+        var friendListHTML = `<h1>Profile</h1><ul>${usernames}</ul>`;
+        friendListContent.innerHTML = friendListHTML;
+
     } else {
-        alert("Only You");
+        friendListContent.innerHTML = "<h1>Profile</h1>\n<p>No friends available.</p>";
     }
 
+    openPopup('friendListPopup');
+
 }
+
+function openPopup(popupId) {
+    var popup = document.getElementById(popupId);
+    popup.style.display = "block";
+}
+
+// Function to close a popup
+function closePopup(popupId) {
+    var popup = document.getElementById(popupId);
+    popup.style.display = "none";
+}
+
+// Function to display user profile details in a popup
+function displayProfile(response) {
+    var profileContent = document.getElementById('profileContent');
+    profileContent.innerHTML = `
+                <h1>Profile</h1>
+                <p>Username: <span>${response.username}</span></p>
+                <p>Full Name: <span>${response.fullname}</span></p>
+                <p>Date of Birth: <span>${response.dateOfBirth}</span></p>
+                <p>Bio: <span>${response.bio}</span></p>
+                <p>Email: <span>${response.email}</span></p>
+            `;
+
+    openPopup('profilePopup');
+}
+
 
 function viewProfile(username) {
 
@@ -287,12 +344,14 @@ function viewProfile(username) {
         },
         success: function (response) {
             // alert("fetching data successfully");
-            var message = "Username: " + response.username +
-                "\nFull Name: " + response.fullname +
-                "\nDate of Birth: " + response.dateOfBirth +
-                "\nBio: " + response.bio +
-                "\nEmail: " + response.email;
-            alert(message);
+            displayProfile(response);
+
+            // var message = "Username: " + response.username +
+            //     "\nFull Name: " + response.fullname +
+            //     "\nDate of Birth: " + response.dateOfBirth +
+            //     "\nBio: " + response.bio +
+            //     "\nEmail: " + response.email;
+            // alert(message);
         },
         error: function (error) {
             alert("Error fetching user profile: " + error);
@@ -300,9 +359,4 @@ function viewProfile(username) {
     });
 }
 
-// function displayProfile(profileData) {
-//     // Modify this function to display the user profile details in a modal or any other UI element
-//     // You can access profile data like profileData.username, profileData.email, etc.
-//     console.log(profileData);
-// }
 

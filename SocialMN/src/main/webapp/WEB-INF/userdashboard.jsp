@@ -390,7 +390,7 @@
             background-color: #45a049;
         }
 
-        .view-friendsButton, .view-profile-button,.mutual-button{
+        .view-friendsButton, .view-profile-button, .mutual-button {
             background-color: #ff9800;
             color: #fff;
             padding: 5px;
@@ -405,7 +405,6 @@
         .mutual-button:hover {
             background-color: #e08000; /* Slightly darker shade on hover */
         }
-
 
 
         .friends-button {
@@ -447,19 +446,76 @@
             position: relative;
         }
 
-        .remove-button{
+        .remove-button {
             background-color: #e74c3c;
             color: #fff;
             padding: 5px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 10px;        }
+            margin-right: 10px;
+        }
 
-        .remove-button:hover{
+        .remove-button:hover {
             background-color: #c0392b;
         }
 
+        /* Popup styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+            z-index: 999;
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #292a2d; /* Dark gray background */
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            color: #fff; /* Text color */
+        }
+
+        .popup-content h1 {
+            font-size: 28px;
+            color: #f39c12; /* Header color */
+            margin-bottom: 20px;
+        }
+
+        .popup-content p {
+            margin: 12px 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .popup-content span {
+            font-weight: bold;
+            color: #3498db; /* Accent color */
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #e74c3c; /* Close button text color */
+        }
+
+        .close:hover {
+            color: #c0392b; /* Close button text color on hover */
+        }
     </style>
 </head>
 <script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>
@@ -486,9 +542,32 @@
         <ul id="userFriendsList" class="friends-list"></ul>
         <button class="friends-button" onclick="loadUserFriends()">Your Friends</button>
     </div>
+</div>
 
+<!-- Popup for user profile -->
+<div id="profilePopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup('profilePopup')">&times;</span>
+        <div id="profileContent"></div>
+    </div>
 </div>
+
+<!-- Popup for viewing friend list -->
+<div id="friendListPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup('friendListPopup')">&times;</span>
+        <div id="friendListContent"></div>
+    </div>
 </div>
+
+<!-- Popup for displaying mutual friends -->
+<div id="mutualFriendsPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup('mutualFriendsPopup')">&times;</span>
+        <div id="mutualFriendsContent"></div>
+    </div>
+</div>
+
 </body>
 <script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>
 </html>
