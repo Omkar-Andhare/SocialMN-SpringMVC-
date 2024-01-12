@@ -36,7 +36,7 @@ public class LoginHandler {
     }
 
     static void validateEmail(String email) throws SignupValidationException {
-        if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$")) {
+        if (!email.matches("^[A-Za-z0-9._%+-]+@gmail\\.com$")) {
             throw new SignupValidationException("Invalid email format");
         }
     }
@@ -51,6 +51,11 @@ public class LoginHandler {
         if (!user.getUsername().matches("[a-zA-Z0-9_]+")) {
             throw new SignupValidationException("Username can only contain letters, numbers, and underscores");
         }
+
+        // Check if the username already exists
+        if (usernameExists(user.getUsername())) {
+            throw new SignupValidationException("Username is already taken. Please choose another username.");
+        }
         validatePassword(user.getPassword());
         validateEmail(user.getEmail());
         logger.info("Received registration request for user:" + user.getUsername());
@@ -58,6 +63,10 @@ public class LoginHandler {
         logger.info("User registered successfully - Username: " + user.getUsername());
         return ResponseEntity.ok("Registered Successfully");
     }
+
+//    private boolean usernameExists(String username) {
+//        return iService.existsByUsername(username);
+//    }
 
     public ResponseEntity<String> validateUser(String username, String password) {
         logger.info("Received login request - Username: " + username);
@@ -68,5 +77,14 @@ public class LoginHandler {
             logger.warn("Login failed for user: " + username);
             return ResponseEntity.badRequest().body("Login Failed");
         }
+    }
+
+    public boolean usernameExists(String username) {
+        return iService.existsByUsername(username);
+    }
+
+    public boolean useremailExists(String email) {
+        return iService.existsByEmail(email);
+
     }
 }

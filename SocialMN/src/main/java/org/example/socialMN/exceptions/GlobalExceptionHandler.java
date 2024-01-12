@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = AddFriendException.class)
-    public ResponseEntity<String> handleAddFriendException(AddFriendException e) {
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<String> handleAddFriendException(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

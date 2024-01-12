@@ -295,7 +295,7 @@ function view(response) {
             usernames += `<li>${friendUsername}</li>`;
         }
 
-        var friendListHTML = `<h1>Profile</h1><ul>${usernames}</ul>`;
+        var friendListHTML = `<h1>Friends</h1><ul>${usernames}</ul>`;
         friendListContent.innerHTML = friendListHTML;
 
     } else {

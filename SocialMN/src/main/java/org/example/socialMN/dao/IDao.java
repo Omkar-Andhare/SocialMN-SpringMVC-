@@ -1,8 +1,6 @@
 package org.example.socialMN.dao;
 
 
-import org.example.socialMN.model.Friendship;
-
 import java.util.List;
 import java.util.Map;
 
@@ -18,5 +16,6 @@ public interface IDao {
 
     <T> void executeHqlUpdate(String hql, Class<T> modelClass, Map<String, Object> parameters);
 
+    <T> boolean existsByField(Class<T> entityClass, String fieldName, Object value);
 
 }

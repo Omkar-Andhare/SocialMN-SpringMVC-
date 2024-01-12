@@ -220,10 +220,22 @@ public class ServiceImpl implements IService {
             Long count = dao.executeHqlQuerySingleResult(hql, Long.class, parameters);
 
             return count > 0;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new AreFriendsException("Error checking friendship: " + e.getMessage());
 
         }
 
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+
+        return dao.existsByField(User.class, "username", username);
+
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return dao.existsByField(User.class, "email", email);
     }
 }

@@ -9,8 +9,6 @@ function signupUser() {
     var email = document.getElementById('email').value;
 
 
-
-
     var userData = {
         "username": username,
         "password": password,
@@ -22,12 +20,20 @@ function signupUser() {
         "email": email
     };
 
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var passwordRegex = /.*(.*[A-Z].*|\d.*\d|.*[!@#$%^&*()-_+=].*).*/;
+    if (!passwordRegex.test(userData.password)) {
+        alert("Password must contain one capital, two digit and one symbol");
+        return;
+    }
+
+
+    var emailRegex = /^[^\s@]+@gmail\.com$/;
     if (!emailRegex.test(userData.email)) {
         alert("Email should be in a valid format.");
         return;
     }
 
+//API for sign up
     $.ajax({
         type: "POST",
         url: "/SocialMN/user/signup",
@@ -36,14 +42,56 @@ function signupUser() {
         success: function () {
             alert("Sign Up successfully..!");
             window.location.href = "/SocialMN/user/login";
-
-
         },
         error: function () {
-            alert("sign up failed , check password or email format ");
+            alert("sign up failed ");
         }
     });
 }
 
+function checkUsernameExistence() {
+    var username = document.getElementById('username').value;
+
+
+    //  API to check username existence
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/check-username",
+        headers: {
+            "username": username
+        },
+        success: function (exists) {
+            if (exists) {
+                alert("Username already exists. Please choose a different one.");
+            }
+        },
+        error: function () {
+            alert("Failed to check username existence");
+
+        }
+    });
+}
+
+function checkEmailExistence() {
+    var email = document.getElementById('email').value;
+
+    // Call API to check email existence
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/check-email",
+        headers: {
+            "email": email
+        },
+        success: function (exists) {
+            if (exists) {
+                alert("Email already exists. Please use a different email.");
+            }
+        },
+        error: function () {
+            alert("Failed to check email existence");
+
+        }
+    });
+}
 
 

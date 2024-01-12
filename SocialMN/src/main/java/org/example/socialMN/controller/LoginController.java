@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user")
@@ -46,6 +44,18 @@ public class LoginController {
         }
         logger.info("Received registration request for user: " + user.getUsername());
         return loginHandler.handleRegistrationRequest(user);
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsernameExistence(@RequestHeader String username) {
+        boolean exists = loginHandler.usernameExists(username);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmailExistence(@RequestHeader String email) {
+        boolean exists = loginHandler.useremailExists(email);
+        return ResponseEntity.ok(exists);
     }
 
     /**

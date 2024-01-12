@@ -25,6 +25,11 @@ public interface IService {
 
     boolean isFriends(User user, User friend) throws AreFriendsException;
 
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
+
 
 //    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);
 }

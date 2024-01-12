@@ -97,6 +97,21 @@ public class DaoImpl implements IDao {
         }
     }
 
+//     Checks if a record with the specified field value exists in the database.
+    @Override
+    public <T> boolean existsByField(Class<T> entityClass, String fieldName, Object value) {
+        try (Session session = sessionFactory.openSession()) {
+            String hql = "SELECT COUNT(e) FROM " + entityClass.getName() + " e WHERE e." + fieldName + " = :value";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("value", value);
+            Long count = query.uniqueResult();
+            return count != null && count > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * Saves a model entity to the database.
      * model The model entity to be saved.

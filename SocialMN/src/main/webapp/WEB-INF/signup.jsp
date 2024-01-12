@@ -74,6 +74,8 @@
         button:hover {
             background-color: #45a049;
         }
+
+
     </style>
 </head>
 <body>
@@ -81,7 +83,8 @@
     <h2>User SignUp</h2>
     <form action="/signup" id="signupform" method="post">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="username" required>
+        <input type="text" id="username" name="username" placeholder="username" required
+               onchange="checkUsernameExistence()" class="username-input">
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" placeholder="Abc%1234 length must be > 8" required>
@@ -105,7 +108,8 @@
         <textarea id="bio" name="bio" rows="4"></textarea>
 
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" placeholder="abc@gmail.com" required>
+        <input type="text" id="email" name="email" placeholder="abc@gmail.com" required
+               onchange="checkEmailExistence()">
 
 
         <button id="submitdata" type="button" onclick="signupUser()">Register</button>
