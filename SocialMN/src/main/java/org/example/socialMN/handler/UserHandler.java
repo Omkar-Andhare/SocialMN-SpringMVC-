@@ -127,4 +127,8 @@ public class UserHandler {
     public User getByUsername(String username) {
         return iService.getByUsername(username);
     }
+
+    public void handleUpdateUserProfile(User updatedUser, String loggedinUser) {
+        iService.updateUserProfile(updatedUser,loggedinUser);
+    }
 }

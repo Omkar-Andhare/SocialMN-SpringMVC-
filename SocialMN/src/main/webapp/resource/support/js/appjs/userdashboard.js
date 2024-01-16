@@ -4,6 +4,7 @@ function getData() {
     var username = sessionStorage.getItem("username");
     var password = sessionStorage.getItem("password");
 
+
     var credentialData = {
         username: username, password: password
     };
@@ -20,6 +21,7 @@ function getData() {
             $("#dobSpan").text(response.data.dateOfBirth);
             $("#bioSpan").text(response.data.bio);
             $("#emailSpan").text(response.data.email);
+            $("#profilePicture").attr("src", response.data.profilePicture);
 
 
         },
@@ -92,7 +94,8 @@ function addFriend(friendUsername) {
 
 
     $.ajax({
-        type: "POST", url: "/SocialMN/user/add-friend", contentType: "application/json", headers: {
+        type: "POST", url: "/SocialMN/user/add-friend",
+        contentType: "application/json", headers: {
             'userName': loggedUserName, 'friendUserName': friendUsername
         }, success: function () {
             showNotification("Friend added successfully");
@@ -137,8 +140,7 @@ function loadUserFriends() {
     var loggedUserName = sessionStorage.getItem("username");
 
     $.ajax({
-        type: "GET", url: "/SocialMN/user/user-friends",
-        headers: {
+        type: "GET", url: "/SocialMN/user/user-friends", headers: {
             'user-name': loggedUserName
         }, success: function (response) {
             displayUserFriends(response);
@@ -256,15 +258,11 @@ function displayMutualFriends(mutualFriends) {
 function viewFriends(username) {
 
     $.ajax({
-        type: "GET",
-        url: "/SocialMN/user/user-friends",
-        headers: {
+        type: "GET", url: "/SocialMN/user/user-friends", headers: {
             'user-name': username
-        },
-        success: function (response) {
+        }, success: function (response) {
             view(response);
-        },
-        error: function (error) {
+        }, error: function (error) {
             alert("Error fetching user friends: " + error);
         }
     });
@@ -336,13 +334,9 @@ function displayProfile(response) {
 function viewProfile(username) {
 
     $.ajax({
-        type: "GET",
-        url: "/SocialMN/user/view-profile",
-        contentType: "application/json",
-        headers: {
+        type: "GET", url: "/SocialMN/user/view-profile", contentType: "application/json", headers: {
             'user-name': username
-        },
-        success: function (response) {
+        }, success: function (response) {
             // alert("fetching data successfully");
             displayProfile(response);
 
@@ -352,11 +346,89 @@ function viewProfile(username) {
             //     "\nBio: " + response.bio +
             //     "\nEmail: " + response.email;
             // alert(message);
-        },
-        error: function (error) {
+        }, error: function (error) {
             alert("Error fetching user profile: " + error);
         }
     });
+}
+
+$(document).ready(function () {
+    // Add the click event listener for the updateProfileButton
+    document.getElementById("editProfileButton").addEventListener("click", function () {
+        openPopup('updateProfileForm');
+    });
+});
+
+
+function updateProfile() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    var fullname = document.getElementById('fullname').value;
+    var dateOfBirth = document.getElementById('dateOfBirth').value;
+    var gender = document.getElementById('gender').value;
+    var bio = document.getElementById('bio').value;
+    var email = document.getElementById('email').value;
+    var fileInput = document.getElementById('updateProfilePicture');
+    var profilePicture = '';
+
+    if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+
+        // Use FileReader to convert the image to base64
+        var reader = new FileReader();
+        reader.onloadend = function () {
+            // Set the base64 representation of the image in the userData
+            profilePicture = reader.result;
+
+            var updatedUser = {
+                "username": username,
+                "password": password,
+                "fullname": fullname,
+                "dateOfBirth": dateOfBirth,
+                "gender": gender,
+                "profilePicture": profilePicture,
+                "bio": bio,
+                "email": email
+            };
+
+            var loggedInUsername = sessionStorage.getItem("username");
+
+            var passwordRegex = /.*(.*[A-Z].*|\d.*\d|.*[!@#$%^&*()-_+=].*).*/;
+            if (!passwordRegex.test(updatedUser.password)) {
+                alert("Password must contain one capital, two digit and one symbol");
+                return;
+            }
+
+
+            var emailRegex = /^[^\s@]+@gmail\.com$/;
+            if (!emailRegex.test(updatedUser.email)) {
+                alert("Email should be in a valid format.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/SocialMN/user/update-profile",
+                contentType: "application/json",
+                data: JSON.stringify(updatedUser),
+                headers: {
+                    'loggedUsername': loggedInUsername
+                },
+                success: function (response) {
+                    showNotification("Profile updated successfully", 'success');
+                    closePopup('updateProfileForm'); // Close the popup after successful update
+                },
+                error: function (error) {
+                    showNotification("Error updating profile: " + error.responseJSON, 'error');
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // Handle the case where no file is selected
+        alert("Please select a profile picture.");
+    }
+
 }
 
 

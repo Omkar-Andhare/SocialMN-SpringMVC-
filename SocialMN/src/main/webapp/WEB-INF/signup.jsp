@@ -81,7 +81,7 @@
 <body>
 <div class="container">
     <h2>User SignUp</h2>
-    <form action="/signup" id="signupform" method="post">
+    <form action="/signup" id="signupform" method="post" enctype="multipart/form-data">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" placeholder="username" required
                onchange="checkUsernameExistence()" class="username-input">
@@ -101,8 +101,11 @@
             <option value="female">Female</option>
         </select>
 
+<%--        <label for="profilePicture">Profile Picture:</label>--%>
+<%--        <input type="text" id="profilePicture" name="profilePicture">--%>
+
         <label for="profilePicture">Profile Picture:</label>
-        <input type="text" id="profilePicture" name="profilePicture">
+        <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
 
         <label for="bio">Bio:</label>
         <textarea id="bio" name="bio" rows="4"></textarea>

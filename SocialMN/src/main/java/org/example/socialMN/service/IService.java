@@ -29,6 +29,8 @@ public interface IService {
 
     boolean existsByEmail(String email);
 
+    void updateUserProfile(User updatedUser, String loggedinUser);
+    <T> T getById(Class<T> entityClass, Long id);
 
 
 //    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);

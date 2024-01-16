@@ -6,9 +6,13 @@ import org.example.socialMN.dao.IDao;
 import org.example.socialMN.exceptions.*;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.PrivateKey;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +24,9 @@ public class ServiceImpl implements IService {
 
     @Autowired
     private IDao dao;
+
+    @Autowired
+    private IService service;
 
     @Override
     public void addUser(User user) {
@@ -238,4 +245,37 @@ public class ServiceImpl implements IService {
     public boolean existsByEmail(String email) {
         return dao.existsByField(User.class, "email", email);
     }
+
+    @Override
+    public void updateUserProfile(User updatedUser, String loggedinUser) {
+        // Fetch the existing user entity from the database
+//        User existingUser = dao.getById(getUserIdByUsername(loggedinUser));
+
+        User existingUser = service.getByUsername(loggedinUser);
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPassword(updatedUser.getPassword());
+
+        existingUser.setFullname(updatedUser.getFullname());
+        existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
+        existingUser.setBio(updatedUser.getBio());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        // If a new profile picture is provided, update it
+        if (updatedUser.getProfilePicture() != null) {
+            existingUser.setProfilePicture(updatedUser.getProfilePicture());
+        }
+
+        dao.save(existingUser);
+    }
+
+    @Override
+    public <T> T getById(Class<T> entityClass, Long id) {
+        String hql = "FROM " + entityClass.getSimpleName() + " WHERE id = :id";
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        parameters.put("id",)
+        return parameters.uniqueResult();
+    }
 }
+

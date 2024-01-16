@@ -139,6 +139,13 @@ public class UserController {
         }
     }
 
+    @PostMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser,@RequestHeader("loggedUsername") String loggedinUser) {
+        userHandler.handleUpdateUserProfile(updatedUser,loggedinUser);
+        return ResponseEntity.ok("Profile updated successfully!");
+
+    }
+
 }
 
 

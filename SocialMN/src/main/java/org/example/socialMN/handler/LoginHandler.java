@@ -59,6 +59,8 @@ public class LoginHandler {
         validatePassword(user.getPassword());
         validateEmail(user.getEmail());
         logger.info("Received registration request for user:" + user.getUsername());
+        user.setProfilePicture(user.getProfilePicture());
+
         iService.addUser(user);
         logger.info("User registered successfully - Username: " + user.getUsername());
         return ResponseEntity.ok("Registered Successfully");

@@ -25,6 +25,8 @@ public class User {
     private List<Friendship> friendList;
 
     private String gender;
+    @Lob
+    @Column(columnDefinition = "BLOB")
     private String profilePicture;
     private String bio;
     private String email;

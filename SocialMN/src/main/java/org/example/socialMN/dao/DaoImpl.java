@@ -71,11 +71,18 @@ public class DaoImpl implements IDao {
     @Override
     public <T> T executeHqlQuerySingleResult(String hql, Class<T> modelClass, Map<String, Object> parameters) {
         Session session = sessionFactory.openSession();
-        Query<T> query = session.createQuery(hql, modelClass);
-        if (null != parameters && !parameters.isEmpty()) {
-            parameters.forEach(query::setParameter);
+        try {
+            Query<T> query = session.createQuery(hql, modelClass);
+            if (null != parameters && !parameters.isEmpty()) {
+                parameters.forEach(query::setParameter);
+            }
+            return query.uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
-        return query.uniqueResult();
+        return null;
     }
 
     @Override
@@ -97,7 +104,7 @@ public class DaoImpl implements IDao {
         }
     }
 
-//     Checks if a record with the specified field value exists in the database.
+    //     Checks if a record with the specified field value exists in the database.
     @Override
     public <T> boolean existsByField(Class<T> entityClass, String fieldName, Object value) {
         try (Session session = sessionFactory.openSession()) {
@@ -112,6 +119,9 @@ public class DaoImpl implements IDao {
         }
     }
 
+
+
+
     /**
      * Saves a model entity to the database.
      * model The model entity to be saved.
@@ -122,6 +132,7 @@ public class DaoImpl implements IDao {
         Transaction transaction = session.beginTransaction();
         session.save(model);
         transaction.commit();
+        session.close();
 
     }
 }
