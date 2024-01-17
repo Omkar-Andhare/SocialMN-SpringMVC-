@@ -14,11 +14,13 @@ This project implements a simplified social media friends network in Java, using
 6. Prevent users from sending multiple friend requests to the same person.
 7. Users can check if they are friends with another user.
 8. Users can find mutual friends with another user.
+9. User can update his data, profile picture
 
 ## Technologies Used
 
 - Java
 - Spring MVC
+- MySql, Hibernate
 
 ## Getting Started
 
