@@ -20,4 +20,7 @@ public interface IDao {
 
     <T> boolean existsByField(Class<T> entityClass, String fieldName, Object value);
 
+    <T> void merge(T entity);
+
+
 }

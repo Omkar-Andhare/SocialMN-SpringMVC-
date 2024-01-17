@@ -6,13 +6,9 @@ import org.example.socialMN.dao.IDao;
 import org.example.socialMN.exceptions.*;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,14 +74,15 @@ public class ServiceImpl implements IService {
             User user = dao.executeHqlQuerySingleResult(hql, User.class, parameters);
 
             if (user == null) {
+                logger.error("User not found for the provided credentials: " + username);
                 throw new UserDataRetrievalException("User not found for the provided credentials");
             }
 
             logger.info("User data retrieved successfully for " + username);
             return user;
-        } catch (Exception e) {
-            // Handle specific exceptions if needed
-            throw new UserDataRetrievalException("Error retrieving user data: " + e.getMessage());
+        } catch (UserDataRetrievalException e) {
+            logger.error("Error retrieving user data for " + username, e);
+            throw e;
         }
     }
 
@@ -265,17 +262,9 @@ public class ServiceImpl implements IService {
             existingUser.setProfilePicture(updatedUser.getProfilePicture());
         }
 
-        dao.save(existingUser);
+        dao.merge(existingUser);
     }
 
-    @Override
-    public <T> T getById(Class<T> entityClass, Long id) {
-        String hql = "FROM " + entityClass.getSimpleName() + " WHERE id = :id";
 
-        Map<String, Object> parameters = new HashMap<>();
-
-        parameters.put("id",)
-        return parameters.uniqueResult();
-    }
 }
 

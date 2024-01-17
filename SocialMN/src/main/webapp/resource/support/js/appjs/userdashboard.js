@@ -334,7 +334,9 @@ function displayProfile(response) {
 function viewProfile(username) {
 
     $.ajax({
-        type: "GET", url: "/SocialMN/user/view-profile", contentType: "application/json", headers: {
+        type: "GET", url: "/SocialMN/user/view-profile",
+        contentType: "application/json",
+        headers: {
             'user-name': username
         }, success: function (response) {
             // alert("fetching data successfully");
@@ -352,9 +354,38 @@ function viewProfile(username) {
     });
 }
 
+function fetchExistingUserData() {
+    var loggedInUsername = sessionStorage.getItem("username");
+
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/get-user-data",
+        contentType: "application/json",
+        data: { username: loggedInUsername },
+        success: function (existingUser) {
+            // Populate the input fields with existing user data
+            $("#username").val(existingUser.username);
+            $("#password").val(existingUser.password);
+            $("#fullname").val(existingUser.fullname);
+            $("#dateOfBirth").val(existingUser.dateOfBirth);
+            $("#gender").val(existingUser.gender);
+            $("#bio").val(existingUser.bio);
+            $("#email").val(existingUser.email);
+            // $("#updateProfilePicture").val(existingUser.profilePicture);
+            if (existingUser.profilePicture) {
+                $("#updateProfilePicture").attr("src", existingUser.profilePicture);
+            }
+        },
+        error: function (error) {
+            console.error("Error fetching existing user data: ", error);
+        }
+    });
+}
+
 $(document).ready(function () {
     // Add the click event listener for the updateProfileButton
     document.getElementById("editProfileButton").addEventListener("click", function () {
+        fetchExistingUserData();
         openPopup('updateProfileForm');
     });
 });
@@ -428,6 +459,7 @@ function updateProfile() {
         // Handle the case where no file is selected
         alert("Please select a profile picture.");
     }
+
 
 }
 

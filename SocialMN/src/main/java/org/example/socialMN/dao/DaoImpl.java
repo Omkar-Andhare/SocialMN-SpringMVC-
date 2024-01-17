@@ -120,8 +120,6 @@ public class DaoImpl implements IDao {
     }
 
 
-
-
     /**
      * Saves a model entity to the database.
      * model The model entity to be saved.
@@ -133,6 +131,24 @@ public class DaoImpl implements IDao {
         session.save(model);
         transaction.commit();
         session.close();
+
+    }
+
+    @Override
+    public <T> void merge(T entity) {
+        Session session = sessionFactory.openSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            session.merge(entity);
+            transaction.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+
+
+        }
 
     }
 }

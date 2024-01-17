@@ -255,6 +255,19 @@
             margin-bottom: 5px;
         }
 
+        .update-profile-button {
+            background: url('/home/perennial/Pictures/edit-info.png') center/contain no-repeat; /* Replace with your logo URL */
+            color: transparent; /* Hide text content */
+            padding: 30px; /* Adjusted padding for logo size */
+            border: none; /* Remove button border */
+            cursor: pointer;
+            transition: opacity 0.3s ease; /* Smooth opacity transition on hover */
+        }
+
+        .update-profile-button:hover {
+            opacity: 0.8; /* Reduce opacity on hover for visual feedback */
+        }
+
     </style>
 </head>
 <script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>
@@ -270,7 +283,7 @@
 
     <p>Bio: <span id="bioSpan"></span></p>
     <p>Email: <span id="emailSpan"></span></p>
-    <button id="editProfileButton">Edit Profile</button>
+    <button id="editProfileButton" class="update-profile-button">Edit</button>
 
     <button id="logoutButton" class="logout-button" onclick="logout()">Logout</button>
 </div>

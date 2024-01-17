@@ -143,8 +143,14 @@ public class UserController {
     public ResponseEntity<?> updateProfile(@RequestBody User updatedUser,@RequestHeader("loggedUsername") String loggedinUser) {
         userHandler.handleUpdateUserProfile(updatedUser,loggedinUser);
         return ResponseEntity.ok("Profile updated successfully!");
-
     }
+
+    @GetMapping("/get-user-data")
+    public ResponseEntity<User> getUserData(@RequestParam("username") String username) {
+        User existingUser = userHandler.getByUsername(username);
+        return ResponseEntity.ok(existingUser);
+    }
+
 
 }
 

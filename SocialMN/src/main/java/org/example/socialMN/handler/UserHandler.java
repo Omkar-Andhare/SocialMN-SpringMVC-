@@ -40,9 +40,11 @@ public class UserHandler {
     public UserDTO mapUserToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDateOfBirth = dateFormat.format(user.getDateOfBirth());
-        userDTO.setDateOfBirth(formattedDateOfBirth);
+        if (user.getDateOfBirth() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDateOfBirth = dateFormat.format(user.getDateOfBirth());
+            userDTO.setDateOfBirth(formattedDateOfBirth);
+        }
         logger.debug("Mapped user data to DTO successfully");
         return userDTO;
     }
