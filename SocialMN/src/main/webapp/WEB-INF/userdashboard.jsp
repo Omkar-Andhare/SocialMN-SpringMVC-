@@ -256,17 +256,20 @@
         }
 
         .update-profile-button {
-            background: url('/home/perennial/Pictures/edit-info.png') center/contain no-repeat; /* Replace with your logo URL */
-            color: transparent; /* Hide text content */
-            padding: 30px; /* Adjusted padding for logo size */
-            border: none; /* Remove button border */
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            transition: opacity 0.3s ease; /* Smooth opacity transition on hover */
+            transition: background-color 0.3s ease;
         }
 
         .update-profile-button:hover {
-            opacity: 0.8; /* Reduce opacity on hover for visual feedback */
+            background-color: #2980b9;
         }
+
 
     </style>
 </head>
