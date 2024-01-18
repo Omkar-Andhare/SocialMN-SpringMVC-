@@ -145,6 +145,11 @@ public class UserController {
         return ResponseEntity.ok(existingUser);
     }
 
+    @GetMapping("/error")
+    public String exceptionHandle() {
+        return "error";
+    }
+
 
 }
 

@@ -131,6 +131,6 @@ public class UserHandler {
     }
 
     public void handleUpdateUserProfile(User updatedUser, String loggedinUser) {
-        iService.updateUserProfile(updatedUser,loggedinUser);
+        iService.updateUserProfile(updatedUser, loggedinUser);
     }
 }
