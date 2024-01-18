@@ -90,7 +90,7 @@
         <input type="password" id="password" name="password" placeholder="Abc%1234 length must be > 8" required>
 
         <label for="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" placeholder="full Name" required>
+        <input type="text" id="fullname" name="fullname" placeholder="full Name" required autocomplete="on">
 
         <label for="dateOfBirth">Date of Birth:</label>
         <input type="date" id="dateOfBirth" name="dateOfBirth" required>

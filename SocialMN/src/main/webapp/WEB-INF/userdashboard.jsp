@@ -306,7 +306,8 @@
 
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Abc%1234 length must be > 8" required>
+                <input type="password" id="password" name="password" placeholder="Abc%1234 length must be > 8" required
+                       autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -315,12 +316,12 @@
                 <input type="text" id="fullname" name="fullname" placeholder="full Name" required>
             </div>
 
-
             <div class="form-group">
                 <label for="dateOfBirth">Date of Birth:</label>
                 <input type="date" id="dateOfBirth" name="dateOfBirth" required>
             </div>
-            <label for="profilePicture">Profile Picture:</label>
+
+            <label for="profilePicture">Profile Picture:</label>--%>
             <input type="file" id="updateProfilePicture" name="profilePicture" accept="image/*">
 
             <div class="form-group">
@@ -334,11 +335,11 @@
                        onchange="checkEmailExistence()">
             </div>
 
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender" required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select>
+            <%--            <label for="gender">Gender:</label>--%>
+            <%--            <select id="gender" name="gender" required>--%>
+            <%--                <option value="male">Male</option>--%>
+            <%--                <option value="female">Female</option>--%>
+            <%--            </select>--%>
 
 
             <div class="form-group">

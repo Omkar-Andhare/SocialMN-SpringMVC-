@@ -23,6 +23,7 @@ function getData() {
             $("#emailSpan").text(response.data.email);
             $("#profilePicture").attr("src", response.data.profilePicture);
 
+            // $("#profilePicture").attr("src", "data:image/jpeg;base64," + response.data.profilePicture);
 
         },
         error: function (error) {
@@ -361,32 +362,41 @@ function fetchExistingUserData() {
         type: "GET",
         url: "/SocialMN/user/get-user-data",
         contentType: "application/json",
-        data: { username: loggedInUsername },
+        data: {username: loggedInUsername},
         success: function (existingUser) {
             // Populate the input fields with existing user data
             $("#username").val(existingUser.username);
             $("#password").val(existingUser.password);
             $("#fullname").val(existingUser.fullname);
-            $("#dateOfBirth").val(existingUser.dateOfBirth);
+            const formattedDate = new Date(existingUser.dateOfBirth).toISOString().split('T')[0];
+            $("#dateOfBirth").val(formattedDate);
+
             $("#gender").val(existingUser.gender);
             $("#bio").val(existingUser.bio);
             $("#email").val(existingUser.email);
-            // $("#updateProfilePicture").val(existingUser.profilePicture);
+
+            // const formProps=Object.fromEntries(existingUser.profilePicture);
+            // $("#updateProfilePicture").val(formProps);
+
+
             if (existingUser.profilePicture) {
-                $("#updateProfilePicture").attr("src", existingUser.profilePicture);
+                $("#updateProfilePicture").attr("src", "data:image/jpeg;base64," + existingUser.profilePicture);
             }
+
         },
         error: function (error) {
             console.error("Error fetching existing user data: ", error);
         }
     });
+
 }
 
 $(document).ready(function () {
     // Add the click event listener for the updateProfileButton
     document.getElementById("editProfileButton").addEventListener("click", function () {
-        fetchExistingUserData();
         openPopup('updateProfileForm');
+
+        fetchExistingUserData();
     });
 });
 

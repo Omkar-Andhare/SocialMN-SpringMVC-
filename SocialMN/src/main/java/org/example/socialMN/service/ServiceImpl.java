@@ -37,7 +37,7 @@ public class ServiceImpl implements IService {
      * return true if a user with the specified username and password exists, false otherwise.
      */
     @Override
-    public boolean getValidateUser(String username, String password) {
+    public boolean getValidateUser(String username, String password) throws UserValidationException {
         logger.info("Validating user with username: " + username);
         // Define the HQL (Hibernate Query Language) to count users with the given username and password
         String hql = "SELECT COUNT(*) FROM User WHERE username = :username AND password = :password";
@@ -46,8 +46,20 @@ public class ServiceImpl implements IService {
         parameters.put("username", username);
         parameters.put("password", password);
         logger.info("User validation result for " + username + ": " + dao.executeQueryForValidation(hql, parameters));
-        // Delegate the validation to the DAO layer by executing the HQL query for validation
-        return dao.executeQueryForValidation(hql, parameters);
+        try {
+            // Delegate the validation to the DAO layer by executing the HQL query for validation
+            boolean validationResult = dao.executeQueryForValidation(hql, parameters);
+
+            if (!validationResult) {
+                throw new UserValidationException("User validation failed for username: " + username);
+            }
+
+            logger.info("User validation result for " + username + ": " + validationResult);
+            return validationResult;
+        } catch (UserValidationException e) {
+            logger.error("User validation exception: " + e.getMessage(), e);
+            throw new UserValidationException("invalid user!!!!!!!!!!");
+        }
     }
 
     /**
@@ -75,7 +87,7 @@ public class ServiceImpl implements IService {
 
             if (user == null) {
                 logger.error("User not found for the provided credentials: " + username);
-                throw new UserDataRetrievalException("User not found for the provided credentials");
+                throw new UserDataRetrievalException("User not found ");
             }
 
             logger.info("User data retrieved successfully for " + username);

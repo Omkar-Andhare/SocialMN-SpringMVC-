@@ -131,7 +131,6 @@ public class DaoImpl implements IDao {
         session.save(model);
         transaction.commit();
         session.close();
-
     }
 
     @Override

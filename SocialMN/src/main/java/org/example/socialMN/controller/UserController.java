@@ -34,14 +34,8 @@ public class UserController {
      */
     @PostMapping(value = "/details", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserData(@RequestBody User userCredentials) throws UserDataRetrievalException {
-        try {
-            return userHandler.handleUserDataRequest(userCredentials);
-        } catch (UserDataRetrievalException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            // Handle other exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
+        return userHandler.handleUserDataRequest(userCredentials);
+
     }
 
     /**
@@ -140,8 +134,8 @@ public class UserController {
     }
 
     @PostMapping("/update-profile")
-    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser,@RequestHeader("loggedUsername") String loggedinUser) {
-        userHandler.handleUpdateUserProfile(updatedUser,loggedinUser);
+    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser, @RequestHeader("loggedUsername") String loggedinUser) {
+        userHandler.handleUpdateUserProfile(updatedUser, loggedinUser);
         return ResponseEntity.ok("Profile updated successfully!");
     }
 
