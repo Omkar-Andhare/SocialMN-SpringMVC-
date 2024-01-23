@@ -318,15 +318,16 @@ function closePopup(popupId) {
 
 // Function to display user profile details in a popup
 function displayProfile(response) {
+
     var profileContent = document.getElementById('profileContent');
     profileContent.innerHTML = `
                 <h1>Profile</h1>
+                <img src="${response.profilePicture}" alt="Profile Picture" style="width: 100px; height: 100px;">
                 <p>Username: <span>${response.username}</span></p>
                 <p>Full Name: <span>${response.fullname}</span></p>
                 <p>Date of Birth: <span>${response.dateOfBirth}</span></p>
                 <p>Bio: <span>${response.bio}</span></p>
-                <p>Email: <span>${response.email}</span></p>
-            `;
+                <p>Email: <span>${response.email}</span></p>`;
 
     openPopup('profilePopup');
 }
