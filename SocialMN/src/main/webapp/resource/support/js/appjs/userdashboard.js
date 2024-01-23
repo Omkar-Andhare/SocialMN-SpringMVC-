@@ -371,7 +371,7 @@ function fetchExistingUserData() {
             const formattedDate = new Date(existingUser.dateOfBirth).toISOString().split('T')[0];
             $("#dateOfBirth").val(formattedDate);
 
-            $("#gender").val(existingUser.gender);
+            // $("#gender").val(existingUser.gender);
             $("#bio").val(existingUser.bio);
             $("#email").val(existingUser.email);
 
@@ -406,11 +406,16 @@ function updateProfile() {
     var password = document.getElementById('password').value;
     var fullname = document.getElementById('fullname').value;
     var dateOfBirth = document.getElementById('dateOfBirth').value;
-    var gender = document.getElementById('gender').value;
+    // var gender = document.getElementById('gender').value;
     var bio = document.getElementById('bio').value;
     var email = document.getElementById('email').value;
     var fileInput = document.getElementById('updateProfilePicture');
     var profilePicture = '';
+
+    // if (existingUserData.profilePicture) {
+    //     var profilePictureElement = document.getElementById('updateProfilePicture');
+    //     profilePictureElement.src = existingUserData.profilePicture;
+    // }
 
     if (fileInput.files.length > 0) {
         var file = fileInput.files[0];
@@ -426,7 +431,7 @@ function updateProfile() {
                 "password": password,
                 "fullname": fullname,
                 "dateOfBirth": dateOfBirth,
-                "gender": gender,
+                // "gender": gender,
                 "profilePicture": profilePicture,
                 "bio": bio,
                 "email": email

@@ -33,25 +33,11 @@ function signupUser() {
                 "bio": bio,
                 "email": email
             };
-
-
-            // var userData = {
-            //     "username": username,
-            //     "password": password,
-            //     "fullname": fullname,
-            //     "dateOfBirth": dateOfBirth,
-            //     "gender": gender,
-            //     "profilePicture": profilePicture,
-            //     "bio": bio,
-            //     "email": email
-            // };
-
             var passwordRegex = /.*(.*[A-Z].*|\d.*\d|.*[!@#$%^&*()-_+=].*).*/;
             if (!passwordRegex.test(userData.password)) {
                 alert("Password must contain one capital, two digit and one symbol");
                 return;
             }
-
 
             var emailRegex = /^[^\s@]+@gmail\.com$/;
             if (!emailRegex.test(userData.email)) {

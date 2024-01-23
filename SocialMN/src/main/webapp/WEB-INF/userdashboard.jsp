@@ -321,7 +321,7 @@
                 <input type="date" id="dateOfBirth" name="dateOfBirth" required>
             </div>
 
-            <label for="profilePicture">Profile Picture:</label>--%>
+            <label for="profilePicture">Profile Picture:</label>
             <input type="file" id="updateProfilePicture" name="profilePicture" accept="image/*">
 
             <div class="form-group">
@@ -334,13 +334,6 @@
                 <input type="text" id="email" name="email" placeholder="abc@gmail.com" required
                        onchange="checkEmailExistence()">
             </div>
-
-            <%--            <label for="gender">Gender:</label>--%>
-            <%--            <select id="gender" name="gender" required>--%>
-            <%--                <option value="male">Male</option>--%>
-            <%--                <option value="female">Female</option>--%>
-            <%--            </select>--%>
-
 
             <div class="form-group">
                 <input type="button" value="Update Profile" onclick="updateProfile()">

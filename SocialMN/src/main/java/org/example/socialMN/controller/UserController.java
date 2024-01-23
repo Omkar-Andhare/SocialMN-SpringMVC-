@@ -44,18 +44,11 @@ public class UserController {
      * return ResponseEntity containing a list of suggested friends for the logged-in user.
      */
     @GetMapping(value = "/suggested-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FriendDTO>> getFriendsSuggestions(@RequestHeader(value = "user-name") String loggedUserName) {
-        try {
-            // Validate if the username is passed or not
-            if (loggedUserName == null || loggedUserName.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            List<FriendDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
-            return new ResponseEntity<>(userList, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<FriendDTO>> getFriendsSuggestions(@RequestHeader(value = "user-name") String loggedUserName)
+            throws SuggestedFriendsException {
+
+        List<FriendDTO> userList = userHandler.handleSuggestedFriends(loggedUserName);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     /**
@@ -66,20 +59,29 @@ public class UserController {
      */
 
     @PostMapping(value = "/add-friend", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addFriends(@RequestHeader String userName, @RequestHeader String friendUserName) {
+    public ResponseEntity<String> addFriends(@RequestHeader String userName, @RequestHeader String friendUserName)
+            throws AddFriendException, UserDataRetrievalException {
         logger.info("Received add friend request - User: " + userName + ", Friend:" + friendUserName);
 
-        try {
-            userHandler.handleAddFriendRequest(userName, friendUserName);
-            return ResponseEntity.ok("Added Successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
+        userHandler.handleAddFriend(userName, friendUserName);
+        return ResponseEntity.ok("Added Successfully");
     }
 
+    /**
+     * Retrieves the friends of a user based on the provided username.
+     * loggedUserName The username of the logged-in user.
+     * ResponseEntity containing a list of UserDTO representing the user's friends.
+     */
     @GetMapping(value = "/user-friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> getUserFriends(@RequestHeader(value = "user-name") String loggedUserName) throws UserFriendsException {
+    public ResponseEntity<List<UserDTO>> getUserFriends(@RequestHeader(value = "user-name")
+                                                        String loggedUserName)
+            throws UserFriendsException {
+        logger.info("Fetching friends for user: " + loggedUserName);
+
         List<UserDTO> userFriends = userHandler.handleGetUserFriends(loggedUserName);
+        logger.info("Retrieved  friends for user: " + loggedUserName);
+
         return new ResponseEntity<>(userFriends, HttpStatus.OK);
     }
 
@@ -90,58 +92,109 @@ public class UserController {
      * return ResponseEntity containing the result that friend removed or not.
      */
     @DeleteMapping("/remove-friend")
-    public ResponseEntity<String> removeFriend(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) throws RemoveFriendException {
-        try {
-            logger.info("Received remove friend request - User: " + loggedUserName + ", Friend: " + friendUserName);
-            userHandler.handleRemoveFriend(loggedUserName, friendUserName);
-            return ResponseEntity.ok("Friend removed successfully");
-        } catch (RemoveFriendException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            // Handle other exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
+    public ResponseEntity<String> removeFriend(@RequestHeader String loggedUserName, @RequestHeader String friendUserName)
+            throws RemoveFriendException {
+
+        logger.info("Received remove friend request - User: " + loggedUserName + ", Friend: " + friendUserName);
+        userHandler.handleRemoveFriend(loggedUserName, friendUserName);
+        return ResponseEntity.ok("Friend removed successfully");
+
     }
 
+    /**
+     * Retrieves the mutual friends between a user and their friend.
+     * loggedUserName The username of the logged-in user.
+     * friendUserName The username of the friend.
+     * ResponseEntity containing a list of usernames representing mutual friends.
+     *
+     * @throws MutualFriendsException If an error occurs while fetching mutual friends.
+     */
     @GetMapping("/mutual-friends")
     public ResponseEntity<List<String>> getMutualFriends(@RequestHeader String loggedUserName, @RequestHeader String friendUserName) throws MutualFriendsException {
         logger.info("Received request for mutual friends - User: " + loggedUserName + ", Friend: " + friendUserName);
         List<String> mutualFriends = userHandler.getMutualFriends(loggedUserName, friendUserName);
+        logger.info("Retrieved mutual friends for User: " + loggedUserName + ", Friend: " + friendUserName);
+
         return ResponseEntity.ok(mutualFriends);
     }
 
+
+    /**
+     * Checks if two users are friends.
+     * <p>
+     * loggedUserName The username of the logged-in user.
+     * friendUserName The username of the friend to check.
+     * ResponseEntity containing a Boolean indicating whether the users are friends or not.
+     *
+     * @throws AreFriendsException        If an error occurs during the process of checking friendship status.
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     @GetMapping("/are-friends")
-    public ResponseEntity<Boolean> areFriends(@RequestParam("user1") String loggedUserName, @RequestParam("user2") String username) {
-        try {
-            boolean areFriends = userHandler.areFriends(loggedUserName, username);
-            return ResponseEntity.ok(areFriends);
-        } catch (AreFriendsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
-        }
+    public ResponseEntity<Boolean> areFriends(@RequestParam("user1") String loggedUserName, @RequestParam("user2") String friendUserName)
+            throws AreFriendsException, UserDataRetrievalException {
+        logger.info("Received request to check friendship status between User1: " + loggedUserName +
+                " and User2: " + friendUserName);
+
+        boolean areFriends = userHandler.areFriends(loggedUserName, friendUserName);
+
+        return ResponseEntity.ok(areFriends);
     }
 
+    /**
+     * Retrieves the profile information of a user based on the provided username.
+     * username The username of the user whose profile is to be viewed.
+     * ResponseEntity containing a UserDTO representing the user's profile.
+     *
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     @GetMapping("/view-profile")
-    public ResponseEntity<UserDTO> viewProfile(@RequestHeader(value = "user-name") String username) {
-        try {
-            User user = userHandler.getByUsername(username);
-            UserDTO userDTO = userHandler.mapUserToDTO(user);
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<UserDTO> viewProfile(@RequestHeader(value = "user-name") String username)
+            throws UserDataRetrievalException {
+        logger.info("Received request to view profile for user: " + username);
+
+        User user = userHandler.getByUsername(username);
+        UserDTO userDTO = userHandler.mapUserToDTO(user);
+        logger.info("Retrieved profile for user: " + username);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+
+    /**
+     * Updates the profile of a user.
+     * <p>
+     * updatedUser   The updated user profile data received in the request body.
+     * loggedinUser  The username of the logged-in user initiating the update.
+     * ResponseEntity indicating the success of the profile update.
+     *
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     @PostMapping("/update-profile")
-    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser, @RequestHeader("loggedUsername") String loggedinUser) {
+    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser, @RequestHeader("loggedUsername") String loggedinUser) throws UserDataRetrievalException {
+        logger.info("Received request to update profile for user: " + loggedinUser);
+
         userHandler.handleUpdateUserProfile(updatedUser, loggedinUser);
+        logger.info("Profile updated successfully for user: " + loggedinUser);
+
         return ResponseEntity.ok("Profile updated successfully!");
     }
 
+    /**
+     * Retrieves user data based on the provided username.
+     * <p>
+     * username The username for which user data needs to be retrieved.
+     * ResponseEntity containing the user data if found.
+     *
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     @GetMapping("/get-user-data")
-    public ResponseEntity<User> getUserData(@RequestParam("username") String username) {
+    public ResponseEntity<User> getUserData(@RequestParam("username") String username)
+            throws UserDataRetrievalException {
+        logger.info("Received request to retrieve user data for username: " + username);
+
         User existingUser = userHandler.getByUsername(username);
+        logger.info("User data retrieved successfully for username: " + username);
+
         return ResponseEntity.ok(existingUser);
     }
 
@@ -149,8 +202,6 @@ public class UserController {
     public String exceptionHandle() {
         return "error";
     }
-
-
 }
 
 

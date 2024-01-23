@@ -26,15 +26,29 @@ public class UserHandler {
     private IService iService;
 
 
+    /**
+     * Handles the request to retrieve user data based on provided credentials.
+     * userCredentials The user credentials containing username and password.
+     * ResponseEntity with user data or an error message.
+     *
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     public ResponseEntity<?> handleUserDataRequest(User userCredentials) throws UserDataRetrievalException {
-        Map<String, Object> result = new HashMap<>();
-        String username = userCredentials.getUsername();
-        String password = userCredentials.getPassword();
-        logger.info("Received request for user credentials - ," + username + "," + password);
-        User user = iService.getUserData(username, password);
-        UserDTO userDTO = mapUserToDTO(user);
-        result.put("data", userDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            Map<String, Object> result = new HashMap<>();
+            String username = userCredentials.getUsername();
+            String password = userCredentials.getPassword();
+            logger.info("Received request for user credentials - ," + username + "," + password);
+            User user = iService.getUserData(username, password);
+            UserDTO userDTO = mapUserToDTO(user);
+            result.put("data", userDTO);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (UserDataRetrievalException e) {
+
+            logger.error("Error retrieving user data", e);
+            throw new UserDataRetrievalException("Error retrieving user data");
+        }
     }
 
     public UserDTO mapUserToDTO(User user) {
@@ -57,58 +71,107 @@ public class UserHandler {
 
     public List<FriendDTO> handleSuggestedFriends(String loggedUserName) throws SuggestedFriendsException {
         logger.info("Received request to get suggested friends for user: " + loggedUserName);
-        List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
-        List<FriendDTO> list = new ArrayList<>();
-        for (User user : allUsers) {
-            FriendDTO friendDTO = mapToFriendDTO(user);
-            list.add(friendDTO);
+        if (iService.existsByUsername(loggedUserName)) {
+
+            try {
+
+                List<User> allUsers = iService.getSuggestedFriends(loggedUserName);
+                List<FriendDTO> list = new ArrayList<>();
+                for (User user : allUsers) {
+                    FriendDTO friendDTO = mapToFriendDTO(user);
+                    list.add(friendDTO);
+                }
+                return list;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new SuggestedFriendsException("error for listing the suggested friend list");
+            }
+        } else {
+            throw new SuggestedFriendsException("Error occurred to fetching suggested friends");
         }
-        return list;
     }
 
+    /**
+     * Retrieves a list of suggested friends for the given user.
+     * loggedUserName The username of the logged-in user.
+     * List of FriendDTO representing suggested friends.
+     *
+     * @throws SuggestedFriendsException If an error occurs while fetching suggested friends.
+     */
     public List<UserDTO> handleGetUserFriends(String loggedUserName) throws UserFriendsException {
-        List<User> userFriends = iService.getUserFriends(loggedUserName);
-        List<UserDTO> list = new ArrayList<>();
-        for (User user : userFriends) {
-            UserDTO userDTO = mapUserToDTO(user);
-            list.add(userDTO);
+        if (iService.existsByUsername(loggedUserName)) {
+            try {
+                List<User> userFriends = iService.getUserFriends(loggedUserName);
+                List<UserDTO> list = new ArrayList<>();
+                for (User user : userFriends) {
+                    UserDTO userDTO = mapUserToDTO(user);
+                    list.add(userDTO);
+                }
+                return list;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new UserFriendsException("Error retrieving user friends: " + e.getMessage());
+            }
+        } else {
+            throw new UserFriendsException("User does not exist");
         }
-        return list;
     }
 
     public void handleRemoveFriend(String loggedUserName, String friendUserName) throws RemoveFriendException {
-        iService.removeFriend(loggedUserName, friendUserName);
-    }
-
-    public ResponseEntity<String> handleAddFriendRequest(String userName, String friendUserName) throws AddFriendException {
-        logger.info("Received request to add friend - User: {}, Friend: {}" + userName + "," + friendUserName);
-
-        User user = iService.getByUsername(userName);
-        User friend = iService.getByUsername(friendUserName);
-        if (user != null && friend != null) {
-            iService.addFriend(user, friend);
-            iService.addFriend(friend, user);
-            return ResponseEntity.ok("Added Successfully");
+        if (iService.existsByUsername(loggedUserName) && iService.existsByUsername(friendUserName)) {
+            iService.removeFriend(loggedUserName, friendUserName);
         } else {
-            throw new AddFriendException("User or friend not found");
+            throw new RemoveFriendException("logged in username or friend username does not exist");
         }
-
     }
 
-    public List<String> getMutualFriends(String loggedUserName, String friendUserName) throws MutualFriendsException {
+    /**
+     * Handles the removal of a friend relationship between two users.
+     * loggedUserName The username of the logged-in user initiating the removal.
+     * friendUserName The username of the friend to be removed.
+     *
+     * @throws RemoveFriendException If an error occurs during the friend removal process.
+     */
+    public void handleAddFriend(String userName, String friendUserName) throws AddFriendException, UserDataRetrievalException {
+        logger.info("Received request to add friend - User: {}, Friend: {}" + userName + "," + friendUserName);
         try {
-            List<String> loggedUserFriends = getUserFriends(loggedUserName);
-
-            List<String> friendFriends = getUserFriends(friendUserName);
-            loggedUserFriends.retainAll(friendFriends);
-            return loggedUserFriends;
-        } catch (Exception e) {
-            throw new MutualFriendsException("Error retrieving mutual friends: " + e.getMessage());
-
+            User user = iService.getByUsername(userName);
+            User friend = iService.getByUsername(friendUserName);
+            if (user != null && friend != null) {
+                iService.addFriend(user, friend);
+                iService.addFriend(friend, user);
+                ResponseEntity.ok("Added Successfully");
+            } else {
+                throw new AddFriendException("User or friend not found");
+            }
+        } catch (AddFriendException e) {
+            e.printStackTrace();
+            throw new AddFriendException("error occurred for adding friends");
         }
     }
 
-    public List<String> getUserFriends(String username) {
+    /**
+     * Retrieves the list of mutual friends between two users.
+     *
+     * @throws MutualFriendsException If an error occurs during the retrieval of mutual friends.
+     */
+    public List<String> getMutualFriends(String loggedUserName, String friendUserName) throws MutualFriendsException {
+        if (iService.existsByUsername(loggedUserName) && iService.existsByUsername(friendUserName)) {
+            try {
+                List<String> loggedUserFriends = getUserFriends(loggedUserName);
+
+                List<String> friendFriends = getUserFriends(friendUserName);
+                loggedUserFriends.retainAll(friendFriends);
+                return loggedUserFriends;
+            } catch (Exception e) {
+                throw new MutualFriendsException("Error retrieving mutual friends: " + e.getMessage());
+            }
+        } else {
+            throw new MutualFriendsException("logged in user or friend user does not exist");
+        }
+    }
+
+    public List<String> getUserFriends(String username) throws UserDataRetrievalException {
         User user = iService.getByUsername(username);
         if (user != null) {
             List<Friendship> friendships = user.getFriendList();
@@ -117,20 +180,38 @@ public class UserHandler {
         return Collections.emptyList();
     }
 
-    public boolean areFriends(String loggedUserName, String username) throws AreFriendsException {
-        User user1 = iService.getByUsername(loggedUserName);
-        User user2 = iService.getByUsername(username);
-        if (user1 != null && user2 != null) {
-            return iService.isFriends(user1, user2);
+    /**
+     * Retrieves the list of friends for a given user.
+     *
+     * @throws UserDataRetrievalException If an error occurs during the retrieval of user friends.
+     */
+    public boolean areFriends(String loggedUserName, String username) throws AreFriendsException, UserDataRetrievalException {
+        if (iService.existsByUsername(loggedUserName) && iService.existsByUsername(username)) {
+            try {
+                User user1 = iService.getByUsername(loggedUserName);
+                User user2 = iService.getByUsername(username);
+                if (user1 != null && user2 != null) {
+                    return iService.isFriends(user1, user2);
+                }
+                return false;
+            } catch (AreFriendsException e) {
+                e.printStackTrace();
+                throw new AreFriendsException("AreFriendship exception occurred");
+            }
+        } else {
+            throw new AreFriendsException("logged in user or other checking(for friendship relation) does not exist");
         }
-        return false;
     }
 
-    public User getByUsername(String username) {
-        return iService.getByUsername(username);
+    public User getByUsername(String username) throws UserDataRetrievalException {
+        if (iService.existsByUsername(username)) {
+            return iService.getByUsername(username);
+        } else {
+            throw new UserDataRetrievalException("user does not exist");
+        }
     }
 
-    public void handleUpdateUserProfile(User updatedUser, String loggedinUser) {
+    public void handleUpdateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException {
         iService.updateUserProfile(updatedUser, loggedinUser);
     }
 }

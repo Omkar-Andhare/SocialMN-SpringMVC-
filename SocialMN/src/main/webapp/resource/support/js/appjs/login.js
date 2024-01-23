@@ -18,12 +18,38 @@ function loginUser() {
         data: JSON.stringify(userData),
         success: function () {
             // alert("Login successfully!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Successful!',
+                showConfirmButton: false,
+                timer: 2000,
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                },
+                background: '#fff',
+            });
 
+            setTimeout(function () {
+                window.location.href = "/SocialMN/user/userdashboard";
+            }, 2000);
 
-            window.location.href = "/SocialMN/user/userdashboard";
+            // window.location.href = "/SocialMN/user/userdashboard";
         },
         error: function () {
-            alert("Login failed. Please check your username and password.");
+            // alert("Login failed. Please check your username and password.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: 'Please check your username and password.',
+                showConfirmButton: true,
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                    content: 'swal2-content-custom',
+                },
+                background: '#fff',
+            });
         }
     });
 }

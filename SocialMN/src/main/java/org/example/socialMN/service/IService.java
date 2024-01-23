@@ -17,7 +17,7 @@ public interface IService {
 
     void addFriend(User user, User friend) throws AddFriendException;
 
-    User getByUsername(String username);
+    User getByUsername(String username) throws UserDataRetrievalException;
 
     List<User> getUserFriends(String loggedUserName) throws UserFriendsException;
 
@@ -29,7 +29,7 @@ public interface IService {
 
     boolean existsByEmail(String email);
 
-    void updateUserProfile(User updatedUser, String loggedinUser);
+    void updateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException;
 
 //    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);
 }

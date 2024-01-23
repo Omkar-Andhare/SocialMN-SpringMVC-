@@ -2,6 +2,7 @@ package org.example.socialMN.controller;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.example.socialMN.exceptions.AuthenticationException;
 import org.example.socialMN.exceptions.SignupValidationException;
 import org.example.socialMN.handler.LoginHandler;
 import org.example.socialMN.model.Login;
@@ -23,7 +24,6 @@ public class LoginController {
 
     /**
      * Handles logout requests.
-     *
      * @return ResponseEntity with a success message if logout is successful.
      */
     @PostMapping("/logout")
@@ -41,7 +41,6 @@ public class LoginController {
 
         logger.info("Received registration request for user: " + user.getUsername());
         return loginHandler.handleRegistrationRequest(user);
-
     }
 
 
@@ -63,7 +62,7 @@ public class LoginController {
      * validate the user
      */
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody Login login) {
+    public ResponseEntity<String> loginUser(@RequestBody Login login) throws AuthenticationException {
         String username = login.getUsername();
         String password = login.getPassword();
         logger.info("Received login request - Username: " + username);

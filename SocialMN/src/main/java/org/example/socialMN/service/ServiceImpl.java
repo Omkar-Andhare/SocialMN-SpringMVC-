@@ -37,29 +37,29 @@ public class ServiceImpl implements IService {
      * return true if a user with the specified username and password exists, false otherwise.
      */
     @Override
-    public boolean getValidateUser(String username, String password) throws UserValidationException {
+    public boolean getValidateUser(String username, String password) throws AuthenticationException {
         logger.info("Validating user with username: " + username);
-        // Define the HQL (Hibernate Query Language) to count users with the given username and password
+
+
+        // HQL to count users with the given username and password
         String hql = "SELECT COUNT(*) FROM User WHERE username = :username AND password = :password";
         Map<String, Object> parameters = new HashMap<>();
         // Prepare parameters to be used in the HQL query
         parameters.put("username", username);
         parameters.put("password", password);
         logger.info("User validation result for " + username + ": " + dao.executeQueryForValidation(hql, parameters));
-        try {
-            // Delegate the validation to the DAO layer by executing the HQL query for validation
-            boolean validationResult = dao.executeQueryForValidation(hql, parameters);
 
-            if (!validationResult) {
-                throw new UserValidationException("User validation failed for username: " + username);
-            }
+        // Delegate the validation to the DAO layer by executing the HQL query for validation
+        boolean validationResult = dao.executeQueryForValidation(hql, parameters);
 
-            logger.info("User validation result for " + username + ": " + validationResult);
-            return validationResult;
-        } catch (UserValidationException e) {
-            logger.error("User validation exception: " + e.getMessage(), e);
-            throw new UserValidationException("invalid user!!!!!!!!!!");
+        if (!validationResult) {
+            throw new AuthenticationException("User validation failed for username: " + username);
         }
+
+        logger.info("User validation result for " + username + ": " + validationResult);
+        return validationResult;
+
+
     }
 
     /**
@@ -70,7 +70,7 @@ public class ServiceImpl implements IService {
     @Override
     public User getUserData(String username, String password) throws UserDataRetrievalException {
         logger.info("Retrieving user data for username: " + username + "ANd password");
-        // Define the HQL (Hibernate Query Language) to select a user by username and password
+        // HQL to select a user by username and password
         String hql = "FROM " + User.class.getName() + " WHERE username = :username AND password = :password";
         // Prepare parameters to be used in the HQL query
         Map<String, Object> parameters = new HashMap<>();
@@ -79,23 +79,18 @@ public class ServiceImpl implements IService {
 
 
         logger.info("User data retrieved successfully for " + username);
-//        // Delegate the query execution to the DAO layer, expecting a single result
-//        return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
-        try {
-            // Delegate the query execution to the DAO layer, expecting a single result
-            User user = dao.executeHqlQuerySingleResult(hql, User.class, parameters);
 
-            if (user == null) {
-                logger.error("User not found for the provided credentials: " + username);
-                throw new UserDataRetrievalException("User not found ");
-            }
 
-            logger.info("User data retrieved successfully for " + username);
-            return user;
-        } catch (UserDataRetrievalException e) {
-            logger.error("Error retrieving user data for " + username, e);
-            throw e;
+        // Delegate the query execution to the DAO layer, expecting a single result
+        User user = dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+
+        if (user == null) {
+            logger.error("User not found for the provided credentials: " + username);
+            throw new UserDataRetrievalException("User not found ");
         }
+
+        logger.info("User data retrieved successfully for " + username);
+        return user;
     }
 
     /**
@@ -109,6 +104,7 @@ public class ServiceImpl implements IService {
     public List<User> getSuggestedFriends(String loggedUserName) throws SuggestedFriendsException {
         try {
             logger.info("Retrieving suggested friends for user: " + loggedUserName);
+
             // Fetch the list of friends for the logged-in user
             List<User> userFriends = getUserFriends(loggedUserName);
             // If the user has no friends, return all suggested friends
@@ -140,6 +136,7 @@ public class ServiceImpl implements IService {
                 logger.info("Suggested friends retrieved successfully for " + loggedUserName);
                 return suggestedFriends;
             }
+
         } catch (Exception e) {
             throw new SuggestedFriendsException("Error retrieving suggested friends: " + e.getMessage());
         }
@@ -157,8 +154,6 @@ public class ServiceImpl implements IService {
         Friendship friends = new Friendship();
         friends.setUser(user);
         friends.setFriend(friend);
-
-
         try {
             dao.save(friends);
             logger.info("Friend connection added successfully");
@@ -173,16 +168,23 @@ public class ServiceImpl implements IService {
      * return The User object corresponding to the provided username
      */
     @Override
-    public User getByUsername(String username) {
-        logger.info("Retrieving user by username: " + username);
-        // HQL query to select a user based on the provided username
-        String hql = "FROM User WHERE username = :username";
-        // Set the parameters for the HQL query
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("username", username);
-        logger.info("User retrieved successfully for " + username);
-        // Execute the HQL query and retrieve a single result (or null)
-        return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+    public User getByUsername(String username) throws UserDataRetrievalException {
+        try {
+            logger.info("Retrieving user by username: " + username);
+            // HQL query to select a user based on the provided username
+            String hql = "FROM User WHERE username = :username";
+            // Set the parameters for the HQL query
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("username", username);
+            logger.info("User retrieved successfully for " + username);
+            // Execute the HQL query and retrieve a single result (or null)
+            return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+        } catch (Exception e) {
+            // Log the exception
+            logger.error("Error retrieving user by username: " + username, e);
+            // Throw a custom exception to indicate the problem
+            throw new UserDataRetrievalException("Error retrieving user by username: " + username);
+        }
     }
 
 
@@ -200,8 +202,8 @@ public class ServiceImpl implements IService {
             logger.info("Friends retrieved successfully for " + loggedUserName);
             return friends;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UserFriendsException("Error retrieving user friends: " + e.getMessage());
-
         }
     }
 
@@ -238,7 +240,6 @@ public class ServiceImpl implements IService {
             return count > 0;
         } catch (Exception e) {
             throw new AreFriendsException("Error checking friendship: " + e.getMessage());
-
         }
 
     }
@@ -247,7 +248,6 @@ public class ServiceImpl implements IService {
     public boolean existsByUsername(String username) {
 
         return dao.existsByField(User.class, "username", username);
-
     }
 
     @Override
@@ -256,7 +256,7 @@ public class ServiceImpl implements IService {
     }
 
     @Override
-    public void updateUserProfile(User updatedUser, String loggedinUser) {
+    public void updateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException {
         // Fetch the existing user entity from the database
 //        User existingUser = dao.getById(getUserIdByUsername(loggedinUser));
 
@@ -273,7 +273,6 @@ public class ServiceImpl implements IService {
         if (updatedUser.getProfilePicture() != null) {
             existingUser.setProfilePicture(updatedUser.getProfilePicture());
         }
-
         dao.merge(existingUser);
     }
 

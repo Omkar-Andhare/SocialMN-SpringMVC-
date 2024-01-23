@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Add this in your HTML file to include SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
     <style>
 
