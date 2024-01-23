@@ -188,6 +188,14 @@ public class ServiceImpl implements IService {
     }
 
 
+    /**
+     * Retrieves the list of friends for a given user.
+     * <p>
+     * loggedUserName The username of the user for whom friends are to be retrieved.
+     * return A List of User objects representing the friends of the specified user.
+     *
+     * @throws UserFriendsException If an error occurs while retrieving user friends.
+     */
     @Override
     public List<User> getUserFriends(String loggedUserName) throws UserFriendsException {
         try {
@@ -207,14 +215,15 @@ public class ServiceImpl implements IService {
         }
     }
 
+    /**
+     * Removes the friendship connection between two users.
+     *
+     * @throws RemoveFriendException If an error occurs while removing the friend connection.
+     */
     @Override
     public void removeFriend(String loggedUserName, String friendUserName) throws RemoveFriendException {
         try {
-            String sql = "DELETE FROM user_friends " +
-                    "WHERE " +
-                    "(user_id IN (SELECT id FROM User WHERE username = :loggedUserName) AND friend_id IN (SELECT id FROM User WHERE username = :friendUserName)) " +
-                    "OR " +
-                    "(user_id IN (SELECT id FROM User WHERE username = :friendUserName) AND friend_id IN (SELECT id FROM User WHERE username = :loggedUserName))";
+            String sql = "DELETE FROM user_friends " + "WHERE " + "(user_id IN (SELECT id FROM User WHERE username = :loggedUserName) AND friend_id IN (SELECT id FROM User WHERE username = :friendUserName)) " + "OR " + "(user_id IN (SELECT id FROM User WHERE username = :friendUserName) AND friend_id IN (SELECT id FROM User WHERE username = :loggedUserName))";
 
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("loggedUserName", loggedUserName);
@@ -225,12 +234,16 @@ public class ServiceImpl implements IService {
         }
     }
 
+    /**
+     * Checks if two users are friends by querying the Friendship records.
+     *
+     * @return True if the users are friends, false otherwise.
+     * @throws AreFriendsException If an error occurs while checking the friendship status.
+     */
     @Override
     public boolean isFriends(User user, User friend) throws AreFriendsException {
         try {
-            String hql = "SELECT COUNT(f) FROM Friendship f " +
-                    "WHERE (f.user.username = :user AND f.friend.username = :friend) " +
-                    "OR (f.user.username = :friend AND f.friend.username = :user)";
+            String hql = "SELECT COUNT(f) FROM Friendship f " + "WHERE (f.user.username = :user AND f.friend.username = :friend) " + "OR (f.user.username = :friend AND f.friend.username = :user)";
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("user", user.getUsername());
             parameters.put("friend", friend.getUsername());
@@ -255,6 +268,13 @@ public class ServiceImpl implements IService {
         return dao.existsByField(User.class, "email", email);
     }
 
+    /**
+     * Updates the user profile with the provided information.
+     * updatedUser   The user entity containing updated information.
+     * loggedinUser  The username of the logged-in user whose profile is being updated.
+     *
+     * @throws UserDataRetrievalException If an error occurs while retrieving user data.
+     */
     @Override
     public void updateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException {
         // Fetch the existing user entity from the database

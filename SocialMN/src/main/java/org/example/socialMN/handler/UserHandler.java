@@ -171,6 +171,11 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Retrieves the list of friends for a given user.
+     *
+     * @throws UserDataRetrievalException If an error occurs during the retrieval of user friends.
+     */
     public List<String> getUserFriends(String username) throws UserDataRetrievalException {
         User user = iService.getByUsername(username);
         if (user != null) {
@@ -203,6 +208,11 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Retrieves a user by their username.
+     *
+     * @throws UserDataRetrievalException If the user does not exist.
+     */
     public User getByUsername(String username) throws UserDataRetrievalException {
         if (iService.existsByUsername(username)) {
             return iService.getByUsername(username);
@@ -211,6 +221,11 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Handles the update of a user's profile information.
+     *
+     * @throws UserDataRetrievalException If an error occurs during the retrieval of user data.
+     */
     public void handleUpdateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException {
         iService.updateUserProfile(updatedUser, loggedinUser);
     }
