@@ -32,7 +32,7 @@ function loginUser() {
 
             setTimeout(function () {
                 window.location.href = "/SocialMN/user/userdashboard";
-            }, 2000);
+            }, 800);
 
             // window.location.href = "/SocialMN/user/userdashboard";
         },

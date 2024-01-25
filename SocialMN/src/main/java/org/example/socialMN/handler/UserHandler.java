@@ -229,4 +229,14 @@ public class UserHandler {
     public void handleUpdateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException {
         iService.updateUserProfile(updatedUser, loggedinUser);
     }
+
+
+    public User handleSearchFriend(String loggedUserName, String friendUsername) throws SearchfriendException {
+        return iService.searchSuggestedFriend(loggedUserName,friendUsername);
+    }
+
+    public User handleSearchExistingFriend(String loggedUserName, String friendUsername) throws SearchfriendException {
+        return iService.searchExistingFriend(loggedUserName,friendUsername);
+
+    }
 }

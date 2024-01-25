@@ -194,13 +194,31 @@ public class UserController {
 
         User existingUser = userHandler.getByUsername(username);
         logger.info("User data retrieved successfully for username: " + username);
-
         return ResponseEntity.ok(existingUser);
     }
 
     @GetMapping("/error")
     public String exceptionHandle() {
         return "error";
+    }
+
+
+    @GetMapping("/search-suggested-friend")
+    public ResponseEntity<User> searchSuggestedFriend(
+            @RequestHeader(value = "user-name") String loggedUserName,
+            @RequestParam("friend-username") String friendUsername
+    ) throws SearchfriendException {
+        User friend = userHandler.handleSearchFriend(loggedUserName, friendUsername);
+        return ResponseEntity.ok(friend);
+    }
+
+    @GetMapping("/search-existing-friend")
+    public ResponseEntity<User> searchExistingFriend(
+            @RequestHeader(value = "user-name") String loggedUserName,
+            @RequestParam("friend-username") String friendUsername
+    ) throws SearchfriendException {
+        User friend = userHandler.handleSearchExistingFriend(loggedUserName, friendUsername);
+        return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 }
 

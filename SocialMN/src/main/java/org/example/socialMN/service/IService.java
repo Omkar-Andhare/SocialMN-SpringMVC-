@@ -31,5 +31,9 @@ public interface IService {
 
     void updateUserProfile(User updatedUser, String loggedinUser) throws UserDataRetrievalException;
 
+    User searchSuggestedFriend(String loggedUserName, String friendUsername) throws SearchfriendException;
+
+    User searchExistingFriend(String loggedUserName, String friendUsername);
+
 //    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);
 }

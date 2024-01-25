@@ -51,7 +51,23 @@ function signupUser() {
                 contentType: "application/json",
                 data: JSON.stringify(userData),
                 success: function () {
-                    alert("Sign Up successfully..!");
+                    // alert("Sign Up successfully..!");
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sign Up Successfully',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            title: 'swal2-title-custom',
+                        },
+                        background: '#fff',
+                    });
+
+                    setTimeout(function () {
+                        window.location.href = "/SocialMN/user/userdashboard";
+                    }, 10000);
                     window.location.href = "/SocialMN/user/login";
                 },
                 error: function () {

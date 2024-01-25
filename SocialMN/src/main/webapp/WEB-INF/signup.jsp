@@ -75,10 +75,42 @@
             background-color: #45a049;
         }
 
+        #top-left-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        #logo {
+            width: 40px; /* Adjust the width of the logo as needed */
+            margin-right: 10px;
+        }
+
+        #home-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #home-link:hover {
+            color: #45a049;
+        }
+
 
     </style>
 </head>
 <body>
+
+<div id="top-left-container">
+    <img id="logo"
+         src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-house-icon-png-image_695369.jpg"
+         alt="Logo">
+    <a id="home-link" href="<c:url value="/user/index"/>">Home</a>
+</div>
 <div class="container">
     <h2>User SignUp</h2>
     <form action="/signup" id="signupform" method="post" enctype="multipart/form-data">
@@ -101,8 +133,8 @@
             <option value="female">Female</option>
         </select>
 
-<%--        <label for="profilePicture">Profile Picture:</label>--%>
-<%--        <input type="text" id="profilePicture" name="profilePicture">--%>
+        <%--        <label for="profilePicture">Profile Picture:</label>--%>
+        <%--        <input type="text" id="profilePicture" name="profilePicture">--%>
 
         <label for="profilePicture">Profile Picture:</label>
         <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
@@ -119,6 +151,8 @@
     </form>
 </div>
 <script src="<c:url value="/resource/support/js/appjs/signup.js"/>"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 </body>
 </html>

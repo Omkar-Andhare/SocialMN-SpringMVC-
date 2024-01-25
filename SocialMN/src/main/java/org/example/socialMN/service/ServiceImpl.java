@@ -234,6 +234,42 @@ public class ServiceImpl implements IService {
         }
     }
 
+    @Override
+    public User searchSuggestedFriend(String loggedUserName, String friendUsername) throws SearchfriendException {
+
+        String hql = "SELECT u FROM User u WHERE u.username = :friendUsername AND u.id <> (SELECT f.id FROM User f WHERE f.username = :loggedUserName)";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("loggedUserName", loggedUserName);
+        parameters.put("friendUsername", friendUsername);
+
+
+        User user = dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+        if (user != null) {
+            return user;
+        } else {
+            throw new SearchfriendException(friendUsername + "is does not exist");
+        }
+    }
+
+    @Override
+    public User searchExistingFriend(String loggedUserName, String friendUsername) {
+        String hql = "SELECT u " +
+                "FROM User u " +
+                "WHERE EXISTS (" +
+                "    SELECT 1 " +
+                "    FROM Friendship f " +
+                "    WHERE (f.user.username = :loggedUserName AND f.friend.username = :friendUsername) " +
+                "       OR (f.user.username = :friendUsername AND f.friend.username = :loggedUserName)" +
+                ")";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("loggedUserName", loggedUserName);
+        parameters.put("friendUsername", friendUsername);
+
+
+        return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+
+    }
+
     /**
      * Checks if two users are friends by querying the Friendship records.
      *
@@ -254,7 +290,6 @@ public class ServiceImpl implements IService {
         } catch (Exception e) {
             throw new AreFriendsException("Error checking friendship: " + e.getMessage());
         }
-
     }
 
     @Override

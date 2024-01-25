@@ -12,17 +12,17 @@
 
     <style>
 
-            body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100vh;
-                background: url("https://static.vecteezy.com/system/resources/previews/007/164/537/original/fingerprint-identity-sensor-data-protection-system-podium-hologram-blue-light-and-concept-free-vector.jpg") center/cover no-repeat;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url("https://static.vecteezy.com/system/resources/previews/007/164/537/original/fingerprint-identity-sensor-data-protection-system-podium-hologram-blue-light-and-concept-free-vector.jpg") center/cover no-repeat;
 
-            }
+        }
 
 
         .container {
@@ -55,9 +55,45 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
+
+        #top-left-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        #logo {
+            width: 40px; /* Adjust the width of the logo as needed */
+            margin-right: 10px;
+        }
+
+        #home-link {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #home-link:hover {
+            color: #45a049;
+        }
+
     </style>
 </head>
 <body>
+
+<div id="top-left-container">
+    <img id="logo"
+         src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-house-icon-png-image_695369.jpg"
+         alt="Logo">
+    <a id="home-link" href="<c:url value="/user/index"/>">Home</a>
+</div>
+
+
 <div class="container">
     <h2>User Login</h2>
     <form id="loginForm" action="/signin" method="post">

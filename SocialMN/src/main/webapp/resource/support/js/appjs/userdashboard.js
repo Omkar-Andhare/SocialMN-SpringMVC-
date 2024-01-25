@@ -35,8 +35,23 @@ function getData() {
 
 function logout() {
     $.ajax({
-        type: "POST", url: "/SocialMN/user/logout", success: function () {
-            // alert("Logout successful");
+        type: "POST", url: "/SocialMN/user/logout",
+        success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Log Out Successful!',
+                showConfirmButton: false,
+                timer: 2000,
+                customClass: {
+                    popup: 'swal2-popup-custom',
+                    title: 'swal2-title-custom',
+                },
+                background: '#fff',
+            });
+
+            setTimeout(function () {
+                window.location.href = "/SocialMN/user/userdashboard";
+            }, 800);
             window.location.href = "/SocialMN/user/index";
         }, error: function (error) {
             console.error("Error during logout", error);
@@ -271,19 +286,6 @@ function viewFriends(username) {
 
 
 function view(response) {
-    // if (response.length > 0) {
-    //     var usernames = "";
-    //     // Iterate over each friend in the response
-    //     for (var i = 0; i < response.length; i++) {
-    //         // Extract the username of the friend
-    //         var friendUsername = response[i].username;
-    //         usernames += friendUsername + "\n";
-    //     }
-    //     var message = "Friends:\n" + usernames;
-    //     alert(message);
-    // } else {
-    //     alert("Only You");
-    // }
 
     var friendListContent = document.getElementById('friendListContent');
 
@@ -343,14 +345,8 @@ function viewProfile(username) {
         }, success: function (response) {
             // alert("fetching data successfully");
             displayProfile(response);
-
-            // var message = "Username: " + response.username +
-            //     "\nFull Name: " + response.fullname +
-            //     "\nDate of Birth: " + response.dateOfBirth +
-            //     "\nBio: " + response.bio +
-            //     "\nEmail: " + response.email;
-            // alert(message);
-        }, error: function (error) {
+        },
+        error: function (error) {
             alert("Error fetching user profile: " + error);
         }
     });
