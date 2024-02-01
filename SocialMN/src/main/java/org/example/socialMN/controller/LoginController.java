@@ -24,11 +24,13 @@ public class LoginController {
 
     /**
      * Handles logout requests.
+     *
      * @return ResponseEntity with a success message if logout is successful.
      */
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         logger.info("Received logout request");
+
         return ResponseEntity.ok("Logout successful");
     }
 
@@ -44,14 +46,26 @@ public class LoginController {
     }
 
 
+    /**
+     * @param username The username to check for existence.
+     * @return ResponseEntity with a boolean indicating whether the username exists.
+     */
     @GetMapping("/check-username")
     public ResponseEntity<Boolean> checkUsernameExistence(@RequestHeader String username) {
+        logger.info("Received request to check the existence of username: " + username);
+
         boolean exists = loginHandler.usernameExists(username);
         return ResponseEntity.ok(exists);
     }
 
+    /**
+     * @param email The email to check for existence.
+     * @return ResponseEntity with a boolean indicating whether the email exists.
+     */
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailExistence(@RequestHeader String email) {
+        logger.info("Received request to check the existence of email: " + email);
+
         boolean exists = loginHandler.useremailExists(email);
         return ResponseEntity.ok(exists);
     }

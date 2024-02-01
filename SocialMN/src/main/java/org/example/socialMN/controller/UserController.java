@@ -60,7 +60,7 @@ public class UserController {
 
     @PostMapping(value = "/add-friend", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addFriends(@RequestHeader String userName, @RequestHeader String friendUserName)
-            throws AddFriendException, UserDataRetrievalException {
+            throws AddFriendException, UserDataRetrievalException, AreFriendsException {
         logger.info("Received add friend request - User: " + userName + ", Friend:" + friendUserName);
 
 
@@ -197,26 +197,42 @@ public class UserController {
         return ResponseEntity.ok(existingUser);
     }
 
-    @GetMapping("/error")
-    public String exceptionHandle() {
-        return "error";
-    }
+//    @GetMapping("/error")
+//    public String exceptionHandle() {
+//        return "error";
+//    }
 
 
+    /**
+     * @param loggedUserName The username of the logged-in user.
+     * @param friendUsername The username of the friend to search for.
+     * @return ResponseEntity with the found User as the response body.
+     * @throws SearchfriendException If an error occurs during the friend search operation.
+     */
     @GetMapping("/search-suggested-friend")
     public ResponseEntity<User> searchSuggestedFriend(
             @RequestHeader(value = "user-name") String loggedUserName,
             @RequestParam("friend-username") String friendUsername
     ) throws SearchfriendException {
+
         User friend = userHandler.handleSearchFriend(loggedUserName, friendUsername);
         return ResponseEntity.ok(friend);
     }
 
+    /**
+     *
+     * @param loggedUserName The username of the logged-in user.
+     * @param friendUsername The username of the friend to search for.
+     * @return ResponseEntity with the found User as the response body.
+     * @throws SearchfriendException If an error occurs during the friend search operation.
+     */
     @GetMapping("/search-existing-friend")
     public ResponseEntity<User> searchExistingFriend(
             @RequestHeader(value = "user-name") String loggedUserName,
             @RequestParam("friend-username") String friendUsername
     ) throws SearchfriendException {
+        logger.info("Received request to search existing friend for user " + loggedUserName + "with friend username: " + friendUsername);
+
         User friend = userHandler.handleSearchExistingFriend(loggedUserName, friendUsername);
         return new ResponseEntity<>(friend, HttpStatus.OK);
     }

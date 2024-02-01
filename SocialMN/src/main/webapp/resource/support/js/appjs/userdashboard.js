@@ -53,6 +53,7 @@ function logout() {
                 window.location.href = "/SocialMN/user/userdashboard";
             }, 800);
             window.location.href = "/SocialMN/user/index";
+            history.go(-2);
         }, error: function (error) {
             console.error("Error during logout", error);
             alert("Error during logout" + error);
@@ -120,6 +121,8 @@ function addFriend(friendUsername) {
             setTimeout(function () {
                 removeFriendFromUI(friendUsername);
             }, 500);
+            $("#searchResults").html("");
+
         },
 
         error: function (error) {
@@ -409,11 +412,6 @@ function updateProfile() {
     var fileInput = document.getElementById('updateProfilePicture');
     var profilePicture = '';
 
-    // if (existingUserData.profilePicture) {
-    //     var profilePictureElement = document.getElementById('updateProfilePicture');
-    //     profilePictureElement.src = existingUserData.profilePicture;
-    // }
-
     if (fileInput.files.length > 0) {
         var file = fileInput.files[0];
 
@@ -471,8 +469,114 @@ function updateProfile() {
         // Handle the case where no file is selected
         alert("Please select a profile picture.");
     }
+}
+
+function searchSuggestedFriend() {
+    var loggedUserName = sessionStorage.getItem("username");
+    var friendUsername = $("#friendSearchInput").val();
+
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/search-suggested-friend",
+        contentType: "application/json",
+
+        headers: {
+            'user-name': loggedUserName
+        },
+        data: {
+            'friend-username': friendUsername
+        },
+        success: function (response) {
+            displayResult(response);
+            // removeUserFromResults();
+            // setTimeout(removeUserFromResults, 500);
+        },
+        error: function (error) {
+            console.error("Error searching suggested friend", error);
+            $("#searchResults").html("User not Found");
+        }
+    });
+}
+
+function searchExistingFriend() {
+    var loggedUserName = sessionStorage.getItem("username");
+    var friendUsername = $("#friendSearchInput").val();
+
+    $.ajax({
+        type: "GET",
+        url: "/SocialMN/user/search-existing-friend",
+        contentType: "application/json",
+
+        headers: {
+            'user-name': loggedUserName
+        },
+        data: {
+            'friend-username': friendUsername
+        },
+        success: function (response) {
+            // TODO print the existing friend
+            if (response && response.username) {
+                // Display user information in the searchResults2 div
+                var displayHtml = `<p>Username: ${response.username}</p>
+                                   <button onclick="addFriend('${response.username}')">Add Friend</button>`;
+
+                $("#searchResults2").html(displayHtml);
+
+                // Display user's friends if available
+                if (response.friends && response.friends.length > 0) {
+                    displaySearchedFriend(response.friends);
+                } else {
+                    $("#searchResults2").append("<p>User has no friends.</p>");
+                }
+            } else {
+                $("#searchResults2").html("<p>User not found.</p>");
+            }
 
 
+        },
+        error: function (error) {
+            console.error("Error searching existing friend", error);
+            $("#searchResults").html("Error searching existing friend");
+        }
+    });
+}
+
+function displayResult(result) {
+    // Customize this function to display the result in your desired way
+
+    if (typeof result === 'object') {
+        var user = result;
+    } else {
+        try {
+            // Parse the result as JSON
+            var user = JSON.parse(result);
+        } catch (error) {
+            console.error("Error parsing JSON:", error);
+            $("#searchResults").html("<p>Error parsing result</p>");
+            return;  // Exit the function if parsing fails
+        }
+    }
+
+    // Display user information in the searchResults div
+    var displayHtml = ` <p>Username: ${user.username}</p>
+        <button onclick="addFriend('${user.username}')">Add Friend</button>`;
+
+
+    $("#searchResults").html(displayHtml);
+    // setTimeout(function () {
+    //     $("#searchResults").html("");
+    // }, 1000);
+}
+
+function displaySearchedFriend(friends) {
+    // Display user's friends
+    var friendsListHtml = "<h2>User's Friends</h2><ul>";
+    friends.forEach(function (friend) {
+        friendsListHtml += `<li>${friend.username}</li>`;
+    });
+    friendsListHtml += "</ul>";
+
+    $("#userFriendsList").html(friendsListHtml);
 }
 
 

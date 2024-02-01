@@ -69,6 +69,13 @@ public class UserHandler {
         return friendDTO;
     }
 
+    /**
+     * Retrieves a list of suggested friends for the given user.
+     * loggedUserName The username of the logged-in user.
+     * List of FriendDTO representing suggested friends.
+     *
+     * @throws SuggestedFriendsException If an error occurs while fetching suggested friends.
+     */
     public List<FriendDTO> handleSuggestedFriends(String loggedUserName) throws SuggestedFriendsException {
         logger.info("Received request to get suggested friends for user: " + loggedUserName);
         if (iService.existsByUsername(loggedUserName)) {
@@ -91,13 +98,7 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Retrieves a list of suggested friends for the given user.
-     * loggedUserName The username of the logged-in user.
-     * List of FriendDTO representing suggested friends.
-     *
-     * @throws SuggestedFriendsException If an error occurs while fetching suggested friends.
-     */
+
     public List<UserDTO> handleGetUserFriends(String loggedUserName) throws UserFriendsException {
         if (iService.existsByUsername(loggedUserName)) {
             try {
@@ -117,6 +118,13 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Handles the removal of a friend relationship between two users.
+     * loggedUserName The username of the logged-in user initiating the removal.
+     * friendUserName The username of the friend to be removed.
+     *
+     * @throws RemoveFriendException If an error occurs during the friend removal process.
+     */
     public void handleRemoveFriend(String loggedUserName, String friendUserName) throws RemoveFriendException {
         if (iService.existsByUsername(loggedUserName) && iService.existsByUsername(friendUserName)) {
             iService.removeFriend(loggedUserName, friendUserName);
@@ -125,13 +133,7 @@ public class UserHandler {
         }
     }
 
-    /**
-     * Handles the removal of a friend relationship between two users.
-     * loggedUserName The username of the logged-in user initiating the removal.
-     * friendUserName The username of the friend to be removed.
-     *
-     * @throws RemoveFriendException If an error occurs during the friend removal process.
-     */
+
     public void handleAddFriend(String userName, String friendUserName) throws AddFriendException, UserDataRetrievalException {
         logger.info("Received request to add friend - User: {}, Friend: {}" + userName + "," + friendUserName);
         try {
@@ -160,8 +162,8 @@ public class UserHandler {
             try {
                 List<String> loggedUserFriends = getUserFriends(loggedUserName);
 
-                List<String> friendFriends = getUserFriends(friendUserName);
-                loggedUserFriends.retainAll(friendFriends);
+                List<String> friendsOfFriend = getUserFriends(friendUserName);
+                loggedUserFriends.retainAll(friendsOfFriend);
                 return loggedUserFriends;
             } catch (Exception e) {
                 throw new MutualFriendsException("Error retrieving mutual friends: " + e.getMessage());
@@ -180,7 +182,13 @@ public class UserHandler {
         User user = iService.getByUsername(username);
         if (user != null) {
             List<Friendship> friendships = user.getFriendList();
-            return friendships.stream().map(friendship -> friendship.getFriend().getUsername()).collect(Collectors.toList());
+            List<String> list = new ArrayList<>();
+            //u can apply java 8 feature here
+            for (Friendship friendship : friendships) {
+                String s = friendship.getFriend().getUsername();
+                list.add(s);
+            }
+            return list;
         }
         return Collections.emptyList();
     }
@@ -232,11 +240,11 @@ public class UserHandler {
 
 
     public User handleSearchFriend(String loggedUserName, String friendUsername) throws SearchfriendException {
-        return iService.searchSuggestedFriend(loggedUserName,friendUsername);
+        return iService.searchSuggestedFriend(loggedUserName, friendUsername);
     }
 
     public User handleSearchExistingFriend(String loggedUserName, String friendUsername) throws SearchfriendException {
-        return iService.searchExistingFriend(loggedUserName,friendUsername);
+        return iService.searchExistingFriend(loggedUserName, friendUsername);
 
     }
 }

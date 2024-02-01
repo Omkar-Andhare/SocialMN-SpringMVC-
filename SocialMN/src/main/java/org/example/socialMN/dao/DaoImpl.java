@@ -74,7 +74,7 @@ public class DaoImpl implements IDao {
         try {
             Query<T> query = session.createQuery(hql, modelClass);
             if (null != parameters && !parameters.isEmpty()) {
-                parameters.forEach(query::setParameter);
+                parameters.forEach((key, value) -> query.setParameter(key, value));
             }
             return query.uniqueResult();
         } catch (Exception e) {
@@ -91,9 +91,7 @@ public class DaoImpl implements IDao {
             Transaction transaction = session.beginTransaction();
             NativeQuery<?> query = session.createNativeQuery(sql);
             if (parameters != null) {
-                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                    query.setParameter(entry.getKey(), entry.getValue());
-                }
+                parameters.forEach((key, value) -> query.setParameter(key, value));
             }
             int rowsAffected = query.executeUpdate();
             if (rowsAffected > 0) {
@@ -145,10 +143,7 @@ public class DaoImpl implements IDao {
             e.printStackTrace();
         } finally {
             session.close();
-
-
         }
-
     }
 }
 

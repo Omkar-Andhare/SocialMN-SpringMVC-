@@ -271,9 +271,62 @@
         }
 
 
+        /*-------------------------*/
+        #friendSearchSection {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        #friendSearchTitle {
+            color: #fff;
+        }
+
+        #friendSearchLabel {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        #friendSearchInput,#friendSearchInput2 {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #searchButtonsContainer {
+            display: flex;
+            justify-content: space-between; /* Adjusted to place buttons on both ends */
+        }
+
+        .searchButton {
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .searchButton:hover {
+            background-color: #2980b9;
+        }
+
+        #searchResults,#searchResults2 {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+
     </style>
 </head>
-<script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>
+<%--<script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>--%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
@@ -348,10 +401,20 @@
 <div class="friend-list-container">
     <div class="suggested-friend-list">
         <h1>Suggested Friend List</h1>
+        <label for="friendSearchInput"></label><input type="text" id="friendSearchInput"
+                                                      placeholder="Search">
+        <button class="searchButton" onclick="searchSuggestedFriend()">Search Suggested Friend</button>
+        <div id="searchResults"></div>
+
         <ul id="friendList" class="friend-list-items"></ul>
     </div>
     <div class="friend-list">
         <h1>Friends</h1>
+<%--        <label for="friendSearchInput"></label><input type="text" id="friendSearchInput2"--%>
+<%--                                                      placeholder="Search">--%>
+<%--        <button class="searchButton" onclick="searchExistingFriend()">Search Existing Friend</button>--%>
+<%--        <div id="searchResults2"></div>--%>
+
         <ul id="userFriendsList" class="friends-list"></ul>
         <button class="friends-button" onclick="loadUserFriends()">Your Friends</button>
     </div>
@@ -380,6 +443,19 @@
         <div id="mutualFriendsContent"></div>
     </div>
 </div>
+
+<%--<div id="friendSearchSection">--%>
+<%--    <h1 id="friendSearchTitle">Friend Search</h1>--%>
+<%--    <label id="friendSearchLabel">Search for a friend:</label>--%>
+<%--    &lt;%&ndash;    <label for="friendSearchInput"></label><input type="text" id="friendSearchInput" placeholder="Enter friend's username">&ndash;%&gt;--%>
+<%--    &lt;%&ndash;    <div id="searchButtonsContainer">&ndash;%&gt;--%>
+<%--    &lt;%&ndash;    <button class="searchButton" onclick="searchSuggestedFriend()">Search Suggested Friend</button>&ndash;%&gt;--%>
+<%--    &lt;%&ndash;    <button class="searchButton" onclick="searchExistingFriend()">Search Existing Friend</button>&ndash;%&gt;--%>
+<%--    &lt;%&ndash;    </div>&ndash;%&gt;--%>
+<%--</div>--%>
+
+<%--<div id="searchResults"></div>--%>
+
 
 </body>
 <script src="<c:url value="/resource/support/js/appjs/userdashboard.js"/>"></script>

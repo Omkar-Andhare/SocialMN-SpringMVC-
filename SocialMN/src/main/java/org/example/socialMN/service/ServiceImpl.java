@@ -149,7 +149,11 @@ public class ServiceImpl implements IService {
      */
     @Override
     public void addFriend(User user, User friend) throws AddFriendException {
+
+
         logger.info("Adding friend connection between " + user.getUsername() + " and " + friend.getUsername());
+
+
         // Create a new Friendship entity to represent the connection
         Friendship friends = new Friendship();
         friends.setUser(user);
@@ -258,8 +262,11 @@ public class ServiceImpl implements IService {
                 "WHERE EXISTS (" +
                 "    SELECT 1 " +
                 "    FROM Friendship f " +
-                "    WHERE (f.user.username = :loggedUserName AND f.friend.username = :friendUsername) " +
-                "       OR (f.user.username = :friendUsername AND f.friend.username = :loggedUserName)" +
+                "    WHERE (" +
+                "        (f.user.username = :loggedUserName AND f.friend.username = :friendUsername) " +
+                "        OR " +
+                "        (f.user.username = :friendUsername AND f.friend.username = :loggedUserName)" +
+                "    )" +
                 ")";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("loggedUserName", loggedUserName);
@@ -267,6 +274,7 @@ public class ServiceImpl implements IService {
 
 
         return dao.executeHqlQuerySingleResult(hql, User.class, parameters);
+
 
     }
 

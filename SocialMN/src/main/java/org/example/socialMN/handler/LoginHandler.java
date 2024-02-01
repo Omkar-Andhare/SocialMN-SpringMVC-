@@ -99,7 +99,7 @@ public class LoginHandler {
      *
      * @return ResponseEntity indicating the result of the registration process.
      */
-    public ResponseEntity<String> handleRegistrationRequest(User user) {
+    public ResponseEntity<String> handleRegistrationRequest(User user) throws SignupValidationException {
 
         logger.info("validating the username , password, email");
         try {
@@ -126,7 +126,7 @@ public class LoginHandler {
         } catch (SignupValidationException e) {
             logger.error("Registration failed: ");
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            throw new SignupValidationException("Error occured during sign up");
         }
     }
 
@@ -135,8 +135,6 @@ public class LoginHandler {
 
 
         try {
-
-
             if (iService.getValidateUser(username, password)) {
                 logger.info("Login successful - Username: " + username);
                 return ResponseEntity.ok("Login Successfully");
