@@ -104,6 +104,11 @@ public class LoginHandler {
         logger.info("validating the username , password, email");
         try {
 
+            String toEmail = user.getEmail();
+            String subject = "Registration Confirmation";
+            String text = "Thank you for registering on our platform. Your registration is successful!";
+            iService.sendMail(toEmail, subject, text);
+
             validateUsername(user.getUsername());
 
             // Check if the username already exists

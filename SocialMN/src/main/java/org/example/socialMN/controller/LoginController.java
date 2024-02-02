@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/user")
 public class LoginController {
@@ -28,8 +30,10 @@ public class LoginController {
      * @return ResponseEntity with a success message if logout is successful.
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<String> logout(HttpServletRequest request ) {
         logger.info("Received logout request");
+
+//        request.getSession().invalidate();
 
         return ResponseEntity.ok("Logout successful");
     }

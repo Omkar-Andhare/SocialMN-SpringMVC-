@@ -35,5 +35,7 @@ public interface IService {
 
     User searchExistingFriend(String loggedUserName, String friendUsername);
 
-//    List<FriendOfFriendsDTO> findFriendsOfFriend( String friendUsername);
+    void sendMail(String to, String subject, String text);
+
+
 }

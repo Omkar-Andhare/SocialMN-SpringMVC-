@@ -23,7 +23,6 @@ function getData() {
             $("#emailSpan").text(response.data.email);
             $("#profilePicture").attr("src", response.data.profilePicture);
 
-            // $("#profilePicture").attr("src", "data:image/jpeg;base64," + response.data.profilePicture);
 
         },
         error: function (error) {
@@ -49,11 +48,16 @@ function logout() {
                 background: '#fff',
             });
 
-            setTimeout(function () {
-                window.location.href = "/SocialMN/user/userdashboard";
-            }, 800);
-            window.location.href = "/SocialMN/user/index";
-            history.go(-2);
+            sessionStorage.clear();
+            localStorage.clear();
+            history.pushState(null, null, window.location.href);
+            window.onpopstate = function () {
+                history.go(-2);
+            };
+
+
+            window.location.href = "/SocialMN/user/login";
+
         }, error: function (error) {
             console.error("Error during logout", error);
             alert("Error during logout" + error);

@@ -34,6 +34,7 @@ public class UserController {
      */
     @PostMapping(value = "/details", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserData(@RequestBody User userCredentials) throws UserDataRetrievalException {
+        
         return userHandler.handleUserDataRequest(userCredentials);
 
     }
@@ -220,7 +221,6 @@ public class UserController {
     }
 
     /**
-     *
      * @param loggedUserName The username of the logged-in user.
      * @param friendUsername The username of the friend to search for.
      * @return ResponseEntity with the found User as the response body.

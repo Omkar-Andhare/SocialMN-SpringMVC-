@@ -7,6 +7,8 @@ import org.example.socialMN.exceptions.*;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ public class ServiceImpl implements IService {
 
     @Autowired
     private IService service;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Override
     public void addUser(User user) {
@@ -278,6 +283,7 @@ public class ServiceImpl implements IService {
 
     }
 
+
     /**
      * Checks if two users are friends by querying the Friendship records.
      *
@@ -337,6 +343,17 @@ public class ServiceImpl implements IService {
             existingUser.setProfilePicture(updatedUser.getProfilePicture());
         }
         dao.merge(existingUser);
+    }
+
+    @Override
+    public void sendMail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+
+        javaMailSender.send(message);
+
     }
 
 
