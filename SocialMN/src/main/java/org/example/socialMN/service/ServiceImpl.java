@@ -6,6 +6,7 @@ import org.example.socialMN.dao.IDao;
 import org.example.socialMN.exceptions.*;
 import org.example.socialMN.model.Friendship;
 import org.example.socialMN.model.User;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,6 +32,11 @@ public class ServiceImpl implements IService {
 
     @Override
     public void addUser(User user) {
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+
+        String hashedPassword = passwordEncryptor.encryptPassword(user.getPassword());
+        user.setPassword(hashedPassword);
+
         logger.info("Adding a new user: " + user.getUsername());
         dao.save(user);
         logger.info("User added successfully: " + user.getUsername());
